@@ -1,7 +1,7 @@
 language: node_js
 
 script:
-
+  - npm run test:sauce
 
 env:
   - TEST_SUITE=chrome_latest_Windows_2012_R2_Desktop,firefox_latest_Windows_2012_R2_Desktop,IE_11_Windows_2012_R2_Desktop

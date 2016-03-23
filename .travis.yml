@@ -4,8 +4,8 @@ script:
   - npm run test:sauce
 
 env:
-  - TEST_SUITE=chrome_latest_Windows_2012_R2_Desktop,firefox_latest_Windows_2012_R2_Desktop,IE_11_Windows_2012_R2_Desktop
-  - TEST_SUITE=safari_8_OS_X_10_10_Desktop,IE_10_Windows_2012_Desktop,safari_9_OS_X_10_11_Desktop
+  - TIER_1_BROWSERS=chrome_latest_Windows_2012_R2_Desktop,firefox_latest_Windows_2012_R2_Desktop,IE_11_Windows_2012_R2_Desktop,safari_9_OS_X_10_11_Desktop
+  - TIER_2_BROWSERS=safari_8_OS_X_10_10_Desktop,IE_10_Windows_2012_Desktop
 
 node_js:
   - "node"

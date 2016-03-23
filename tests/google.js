@@ -18,6 +18,7 @@ module.exports = new Test({
   "test elLengthGreaterThan": function (client) {
     client
       .assert.elLengthGreaterThan("[value='Google Search']", "value", 12)
+      .assert.elValueContains("[value='Google Search']", "Google Search")
       .assert.elLengthGreaterThan("#fsl a", "length", 2)
       .assert.elLengthGreaterThan("#fsl a:eq(1)", "text", 4)
   },
@@ -41,6 +42,8 @@ module.exports = new Test({
         console.log(value)
       })
       .assert.elContainsText("#corp-crumb", "About Google")
+      .assert.elContainsText("#corp-crumb", "\\w+")
+      .assert.elNotContainsText("#corp-crumb", "ahhahahaha")
       .assert.selectorHasLength("#corp-crumb", 1)
       .assert.elLengthGreaterThan("#about-mission", "html", 100);
   },

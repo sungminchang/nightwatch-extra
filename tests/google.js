@@ -9,8 +9,8 @@ module.exports = new Test({
 
   "wait for lage load": function (client) {
     client
-      .getEl("#lst-ib:visible")
-      .getEls("#lst-ib:visible", function (els) {
+      .getEl("[name='q']:visible")
+      .getEls("[name='q']:visible", function (els) {
         console.log(els);
       });
   },
@@ -18,16 +18,14 @@ module.exports = new Test({
   "test elLengthGreaterThan": function (client) {
     client
       .assert.elLengthGreaterThan("[value='Google Search']", "value", 12)
-      .assert.elValueContains("[value='Google Search']", "Google Search")
-      .assert.elLengthGreaterThan("#fsl a", "length", 2)
-      .assert.elLengthGreaterThan("#fsl a:eq(1)", "text", 4)
+      .assert.elValueContains("[value='Google Search']", "Google Search");
   },
 
   "type search term": function (client) {
     client
-      .setElValue("#lst-ib", "hahaha")
-      .clearValue("#lst-ib")
-      .setMaskedElValue("#lst-ib", "hahaha")
+      .setElValue("[name='q']", "hahaha")
+      // .clearValue("[name='q']")
+      // .setMaskedElValue("[name='q']", "hahaha")
       .clickEl(".lsb")
       .assert.elContainsText("#resultStats", "About");
   },
@@ -37,7 +35,7 @@ module.exports = new Test({
       .clickEl("#logocont a")
       .getEl("a[href='//www.google.com/intl/en/about.html?fg=1']")
       .clickEl("a[href='//www.google.com/intl/en/about.html?fg=1']")
-      .waitForElNotPresent("#lst-ib")
+      .waitForElNotPresent("[name='q']:visible")
       .getElValue("#corp-crumb", function (value) {
         console.log(value)
       })
@@ -51,7 +49,7 @@ module.exports = new Test({
   "move mouse to logo": function (client) {
     client
       .moveToEl("#maia-footer-global li:eq(2) a", 0, 0)
-      // .takeScreenshot("hehehehe");
+      .assert.elLengthGreaterThan("#maia-footer-global li", "length", 2);
   }
 
 });

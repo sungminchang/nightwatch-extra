@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "magellan",
-    "test:sauce": "magellan --external_build_id=$TRAVIS_BUILD_ID --sauce --bail_time=${MAGELLAN_INDIVIDUAL_TEST_BAIL_TIME} --max_workers=${MAGELLAN_MAX_WORKERS} --browsers=$TIER_1_BROWSERS,$TIER_2_BROWSERS --nightwatch_config tests/conf/nightwatch.json",
+    "test:sauce": "magellan --external_build_id=$TRAVIS_BUILD_ID --sauce --bail_time=${MAGELLAN_INDIVIDUAL_TEST_BAIL_TIME} --max_workers=${MAGELLAN_MAX_WORKERS} --browsers=${TIER_1_BROWSERS},${TIER_2_BROWSERS} --nightwatch_config tests/conf/nightwatch.json",
     "magellan:setup": "exit 0",
     "magellan:teardown": "exit 0"
   },

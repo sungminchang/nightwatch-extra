@@ -15,16 +15,18 @@ module.exports = new Test({
       });
   },
 
+  "test elLengthGreaterThan": function (client) {
+    client
+      .assert.elLengthGreaterThan("[value='Google Search']", "value", 12)
+      .assert.elLengthGreaterThan("#fsl a", "length", 2)
+      .assert.elLengthGreaterThan("#fsl a:eq(1)", "text", 4)
+  },
+
   "type search term": function (client) {
     client
       .setElValue("#lst-ib", "hahaha")
       .clickEl(".lsb")
       .assert.elContainsText("#resultStats", "About");
-  },
-
-  "move mouse to logo": function (client) {
-    client
-      .moveToEl("#logocont a", 0, 0);
   },
 
   "jump to about page and assert": function (client) {
@@ -37,7 +39,14 @@ module.exports = new Test({
         console.log(value)
       })
       .assert.elContainsText("#corp-crumb", "About Google")
-      .assert.selectorHasLength("#corp-crumb", 1);
+      .assert.selectorHasLength("#corp-crumb", 1)
+      .assert.elLengthGreaterThan("#about-mission", "html", 100);
+  },
+
+  "move mouse to logo": function (client) {
+    client
+      .moveToEl("#maia-footer-global li:eq(2) a", 0, 0)
+      // .takeScreenshot("hehehehe");
   }
 
 });

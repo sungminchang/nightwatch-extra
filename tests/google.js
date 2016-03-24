@@ -36,8 +36,8 @@ module.exports = new Test({
       .getEl("a[href='//www.google.com/intl/en/about.html?fg=1']")
       .clickEl("a[href='//www.google.com/intl/en/about.html?fg=1']")
       .waitForElNotPresent("[name='q']:visible")
-      .getElValue("#corp-crumb", function (value) {
-        console.log(value)
+      .getElValue("#corp-crumb", function (value, sel) {
+        console.log(value, sel)
       })
       .assert.elContainsText("#corp-crumb", "About Google")
       .assert.elContainsText("#corp-crumb", "\\w+")

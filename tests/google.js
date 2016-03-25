@@ -48,7 +48,7 @@ module.exports = new Test({
 
   "move mouse to logo": function (client) {
     client
-      .moveToEl("#maia-footer-global li:eq(2) a", 0, 0)
+      .scrollToEl("#maia-footer-global li:eq(2) a", 0, 0)
       .assert.elLengthGreaterThan("#maia-footer-global li", "length", 2);
   }
 

@@ -15,7 +15,7 @@ In `nightwatch.json` add following content
   ]
 ```
 
-If you're using this repo together with [testarmada-magellan](http://github.com/TestArmada/magellan), your base test can inherits the provided base test by 
+If you're using this repo together with [testarmada-magellan](http://github.com/TestArmada/magellan), your base test can inherit from the base test by 
 ```
 var BaseTest = require("testarmada-nightwatch-extra/lib/base-test-class");
 ```

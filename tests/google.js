@@ -24,8 +24,6 @@ module.exports = new Test({
   "type search term": function (client) {
     client
       .setElValue("[name='q']", "hahaha")
-      // .clearValue("[name='q']")
-      // .setMaskedElValue("[name='q']", "hahaha")
       .clickEl(".lsb")
       .assert.elContainsText("#resultStats", "About");
   },

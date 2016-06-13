@@ -1,6 +1,6 @@
 {
   "name": "testarmada-nightwatch-extra",
-  "version": "2.0.0-beta1",
+  "version": "2.0.0",
   "description": "extra useful nightwatch command and assertion",
   "main": "index.js",
   "scripts": {

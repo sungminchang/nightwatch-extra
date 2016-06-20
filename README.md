@@ -2,6 +2,16 @@
 
 Enhanced [nightwatchjs](http://nightwatchjs.org/) commands and assertions. 
 
+## Features
+
+nightwatch-extra enhancement includes
+
+ 1. An automatical wait for element to be visible (using jquery `:visible` pseudo) before executing every nightwatch command or assertion (done by injecting sizzlejs).
+ 2. A base command with wait-for-visible feature for further extension.
+ 3. A base assertion with wait-for-visible feature for further extension.
+ 4. A base test for customization.
+ 5. An easy-to-use [sizzlejs](http://sizzlejs.com/) selector option.
+
 ## Usage
 
 In `nightwatch.json` add following content
@@ -31,48 +41,59 @@ All commands and assertions are fully compatible with nightwatchjs page object.
 
 <table>
   <tr>
-    <th>Nightwatch-Extra Equivalent</th>
-    <th>Nightwatch Command</th>
+    <th>Nightwatch-extra Command</th>
+    <th>Example</th>
+    <th>Nightwatch Equivalent</th>
   </tr>
   <tr>
+    <td>clickAutomationEl(css selector)</td>
     <td>clickAutomationEl("mybutton")</td>
-    <td>click("[data-automation-id="mybutton"])</td>
+    <td>click("[data-automation-id='mybutton']")</td>
   </tr>
   <tr>
-    <td>clickEl(selector)</td>
-    <td>click(selector)</td>
+    <td>clickEl(css selector)</td>
+    <td>clickEl(".submitButton")</td>
+    <td>click(".submitButton")</td>
   </tr>
   <tr>
-    <td>getEl(selector)</td>
-    <td>waitForElementPresent or waitForElementVisible</td>
+    <td>getEl(css selector)</td>
+    <td>getEl(".submitButton")</td>
+    <td>waitForElementPresent(".submitButton") or waitForElementVisible(".submitButton")</td>
   </tr>
   <tr>
-    <td>moveToEl(selector, xoffset, yoffset)</td>
-    <td>moveToElement</td>
+    <td>moveToEl(css selector, xoffset, yoffset)</td>
+    <td>moveToEl(".submitButton", 10, 10)</td>
+    <td>moveToElement(".submitButton", 10, 10)</td>
   </tr>
   <tr>
-    <td>setElValue(selector, value)</td>
-    <td>setValue(selector, value)</td>
+    <td>setElValue(css selector, value)</td>
+    <td>setElValue(".username", "testarmada")</td>
+    <td>setValue(".username", "testarmada")</td>
   </tr>
   <tr>
-    <td>getElValue(selector, callback)</td>
-    <td>getValue(selector)</td>
+    <td>getElValue(css selector, callback)</td>
+    <td>getElValue(".user-profile", function(profile){// use profile here})</td>
+    <td>getValue(".user-profile", function(profile){// use profile here})</td>
   </tr>
   <tr>
-    <td>getEls(selector, callback)</td>
-    <td>elements(using, value, callback)</td>
+    <td>getEls(css selector, callback)</td>
+    <td>getEls(".state-options", function(stats){// use stats here})</td>
+    <td>elements("css selector", ".state-options", function(stats){// use stats here})</td>
   </tr>
   <tr>
-    <td>setMaskedElValue(selector, value, [fieldLength])</td>
+    <td>setMaskedElValue(css selector, value, [fieldLength])</td>
+    <td>setMaskedElValue(".phone-number", "123456789")</td>
     <td>(no nightwatch equivalent)</td>
+  </tr>
+   <tr>
+    <td>waitForElNotPresent(css selector)</td>
+    <td>waitForElNotPresent(".submitButton")</td>
+    <td>waitForElementNotPresent(".submitButton")</td>
   </tr>
   <tr>
     <td>getPerformance(url)</td>
+    <td>getPerformance("http://www.google.com")</td>
     <td>Retrieves basic performance metrics using Navigation API (http://www.w3.org/TR/navigation-timing/)</td>
-  </tr>
-  <tr>
-    <td>waitForElNotPresent(selector)</td>
-    <td>waitForElementNotPresent(selector)</td>
   </tr>
 </table>
 
@@ -80,24 +101,29 @@ All commands and assertions are fully compatible with nightwatchjs page object.
 
 <table>
   <tr>
-    <th>Nightwatch-Extra Equivalent</th>
-    <th>Nightwatch Assertion</th>
+    <th>Nightwatch-extra Assertion</th>
+    <th>Example</th>
+    <th>Nightwatch Equivalent</th>
   </tr>
   
   <tr>
-    <td>assert.elContainsText(selector, regex or text)</td>
-    <td>assert.containsText(selector, text)</td>
+    <td>assert.elContainsText(css selector, regex or text)</td>
+    <td>assert.elContainsText(".username", "testarmada")</td>
+    <td>assert.containsText(".username", "testarmada")</td>
   </tr>
   <tr>
-    <td>assert.elNotContainsText(selector, text)</td>
+    <td>assert.elNotContainsText(css selector, text)</td>
+    <td>assert.elNotContainsText(".username", "testarmada")</td>
     <td>(no nightwatch equivalent)</td>
   </tr>
   <tr>
-    <td>assert.selectorHasLength(selector, expectedLength)</td>
+    <td>assert.selectorHasLength(css selector, expectedLength)</td>
+    <td>assert.selectorHasLength(".username", 10)</td>
     <td>(no nightwatch equivalent)</td>
   </tr>
   <tr>
-    <td>assert.elLengthGreaterThan(selector, selectUsing, lengthToCompare)</td>
+    <td>assert.elLengthGreaterThan(css selector, selectUsing, lengthToCompare)</td>
+    <td>assert.elLengthGreaterThan(".username", "text", 10)</td>
     <td>(no nightwatch equivalent)</td>
   </tr>
 </table>
@@ -113,6 +139,10 @@ All Nightwatch commands and assertions are supported out of the box.
 #### Supported Nightwatch Assertions
 
 * Please refer to [Nightwatch Assertions API](http://nightwatchjs.org/api#assertions) for a list of supported Nightwatch assertions
+
+#### Supported Nightwatch Page Object
+
+* All nightwatch-extra commands and assertions fully support nightwatch page object mode. They can be utilized directly if nightwatch page object is being used in your test.
 
 #### Supported Node Assertions
 

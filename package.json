@@ -86,7 +86,7 @@
   },
   "devDependencies": {
     "nightwatch": "0.8.18",
-    "testarmada-magellan": "^8.0.3 ",
+    "testarmada-magellan": "8.8.3",
     "testarmada-magellan-nightwatch": "^4.1.1",
     "testarmada-magellan-nightwatch-plugin": "^5.0.0",
     "phantomjs": "1.9.18",

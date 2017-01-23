@@ -3,7 +3,7 @@ instrumentation:
     extensions:
         - .js
     default-excludes: true
-    excludes: ['**/injections/**', '**/util/sauce.js']
+    excludes: ['**/injections/**', '**/executor/sauce.js']
 
 reporting:
     reports:

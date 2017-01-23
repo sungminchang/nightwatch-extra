@@ -3,7 +3,7 @@
 import chai from "chai";
 import _ from "lodash";
 
-import BaseAssertion from "../../lib/assertions/base/baseElAssertion";
+import BaseAssertion from "../../lib/base-assertion";
 import settings from "../../lib/settings";
 
 const expect = chai.expect;
@@ -334,6 +334,99 @@ describe("Base assertion", () => {
         baseAssertion.execute(() => { }, args, (result) => {
         });
       });
+    });
+  });
+
+  describe("checkConditions", () => {
+    it("Succeed with multi js seens", () => {
+      let args = ["[name='q']", "return $el.length"];
+
+      baseAssertion = new BaseAssertion(clientMock);
+      baseAssertion.seenCount = 0;
+      baseAssertion.expected = "some_fake_value";
+      baseAssertion.startTime = (new Date()).getTime();
+      baseAssertion.assert = (value, expected) => {
+        expect(baseAssertion.seenCount).to.equal(1);
+        expect(expected).to.equal("some_fake_value");
+        expect(value).to.equal("magellan_selector_2f38e1cf");
+      };
+      baseAssertion.decide();
+      baseAssertion.checkConditions();
+    });
+
+    it("Succeed with multi elements found warning", () => {
+      let args = ["[name='q']", "return $el.length"];
+
+      clientMock.api.executeAsync = (fn, args, callback) => {
+        callback({
+          state: 'success',
+          sessionId: '60c692d2-7b53-4d43-a340-8d6133af13a8',
+          hCode: 1895546026,
+          value:
+          {
+            isSync: false,
+            selectorLength: 2,
+            isVisible: true,
+            isVisibleStrict: true,
+            seens: 3,
+            value: { value: 'magellan_selector_2f38e1cf', sel: '[name=\'q\']' },
+            selectorVisibleLength: 1
+          },
+          class: 'org.openqa.selenium.remote.Response',
+          status: 0
+        });
+      };
+
+      baseAssertion = new BaseAssertion(clientMock);
+      baseAssertion.seenCount = 0;
+      baseAssertion.expected = "some_fake_value";
+      baseAssertion.startTime = (new Date()).getTime();
+      baseAssertion.assert = (value, expected) => {
+        expect(baseAssertion.seenCount).to.equal(1);
+        expect(expected).to.equal("some_fake_value");
+        expect(value).to.equal("magellan_selector_2f38e1cf");
+      };
+      baseAssertion.decide();
+      baseAssertion.checkConditions();
+    });
+
+    it("Succeed with multi seens", (done) => {
+      let args = ["[name='q']", "return $el.length"];
+
+      clientMock.api.execute = (fn, args, callback) => {
+        callback({
+          state: 'success',
+          sessionId: '60c692d2-7b53-4d43-a340-8d6133af13a8',
+          hCode: 1895546026,
+          value:
+          {
+            isSync: true,
+            selectorLength: 1,
+            isVisible: true,
+            isVisibleStrict: true,
+            seens: 1,
+            value: { value: 'magellan_selector_2f38e1cf', sel: '[name=\'q\']' },
+            selectorVisibleLength: 1
+          },
+          class: 'org.openqa.selenium.remote.Response',
+          status: 0
+        });
+      };
+
+      baseAssertion = new BaseAssertion(clientMock, {
+        syncModeBrowserList: ["chrome:55", "iphone"]
+      });
+      baseAssertion.seenCount = 0;
+      baseAssertion.expected = "some_fake_value";
+      baseAssertion.startTime = (new Date()).getTime();
+      baseAssertion.assert = (value, expected) => {
+        expect(baseAssertion.seenCount).to.equal(3);
+        expect(expected).to.equal("some_fake_value");
+        expect(value).to.equal("magellan_selector_2f38e1cf");
+        done();
+      };
+      baseAssertion.decide();
+      baseAssertion.checkConditions();
     });
   });
 });

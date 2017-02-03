@@ -13,7 +13,7 @@
     "upload-coverage": "./node_modules/.bin/codecov --root=lib",
     "lint": "./node_modules/.bin/eslint src/**",
     "prepublish": "npm run build:clean",
-    "postinstall": "[ -d src ] && npm run build:clean"
+    "postinstall": "[ -d src ] && npm run build:clean || exit 0"
   },
   "repository": {
     "type": "git",

@@ -4,7 +4,8 @@
   ],
   "output_folder": "reports",
   "custom_commands_path": [
-    "./lib/commands"
+    "./lib/commands",
+    "./lib/commands/mobile"
   ],
   "custom_assertions_path": [
     "./lib/assertions"

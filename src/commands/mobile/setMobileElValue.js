@@ -11,21 +11,31 @@ util.inherits(SetMobileElValue, BaseCommand);
 SetMobileElValue.prototype.do = function (value) {
   const self = this;
 
-  this.protocol(
-    {
-      path: `/session/${this.client.sessionId}/element/${value.ELEMENT}/value`,
-      method: "POST",
-      data: {
-        value: this.valueToSet
-      }
-    },
-    (result) => {
+  this.client.api
+    .elementIdValue(value.ELEMENT, this.valueToSet, (result) => {
+      console.log("===>", result)
       if (result.status === 0) {
         self.pass(result.value);
       } else {
         self.fail();
       }
     });
+
+  // this.protocol(
+  //   {
+  //     path: `/session/${this.client.sessionId}/element/${value.ELEMENT}/value`,
+  //     method: "POST",
+  //     data: {
+  //       value: this.valueToSet
+  //     }
+  //   },
+  //   (result) => {
+  //     if (result.status === 0) {
+  //       self.pass(result.value);
+  //     } else {
+  //       self.fail();
+  //     }
+  //   });
 };
 
 /*eslint max-params:["error", 4] */

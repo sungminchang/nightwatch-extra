@@ -13,27 +13,12 @@ ClickMobileEl.prototype.do = function (value) {
 
   this.client.api
     .elementIdClick(value.ELEMENT, (result) => {
-      console.log("===>",result)
       if (result.status === 0) {
         self.pass(result.value);
       } else {
         self.fail();
       }
     });
-
-  // this.protocol(
-  //   {
-  //     path: `/session/${this.client.sessionId}/element/${value.ELEMENT}/click`,
-  //     method: "POST",
-  //     data: ""
-  //   },
-  //   (result) => {
-  //     if (result.status === 0) {
-  //       self.pass(result.value);
-  //     } else {
-  //       self.fail();
-  //     }
-  //   });
 };
 
 ClickMobileEl.prototype.command = function (using, selector, cb) {

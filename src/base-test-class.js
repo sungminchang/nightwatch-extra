@@ -14,8 +14,7 @@ const BaseTest = function (steps, customizedSettings = null) {
   const self = this;
   const enumerables = ["before", "after", "beforeEach", "afterEach"];
 
-  // this.isWorker = settings.isWorker;
-  this.isWorker = false
+  this.isWorker = settings.isWorker;
   this.env = settings.env;
 
   if (customizedSettings) {
@@ -65,9 +64,9 @@ BaseTest.prototype = {
 
     this.isSupposedToFailInBefore = false;
 
-    // if (this.isWorker) {
-    //   this.worker = new Worker({ nightwatch: client });
-    // }
+    if (this.isWorker) {
+      this.worker = new Worker({ nightwatch: client });
+    }
 
     if (client.globals.test_settings.appium
       && client.globals.test_settings.appium.start_process) {
@@ -86,7 +85,7 @@ BaseTest.prototype = {
     }
   },
 
-  beforeEach(client, callback) {
+  beforeEach(client) {
     // Tell reporters that we are starting this test.
     // This logic would ideally go in the "before" block and not "beforeEach"
     // but Nightwatch does not give us access to the module (file) name in the
@@ -108,8 +107,6 @@ BaseTest.prototype = {
       settings.sessionId = client.sessionId;
       this.worker.emitSession(client.sessionId);
     }
-
-    callback();
   },
 
   afterEach(client, callback) {
@@ -154,36 +151,41 @@ BaseTest.prototype = {
       process.removeListener("message", self.worker.handleMessage);
     }
 
-
+    if (self.isSupposedToFailInBefore) {
+      // there is a bug in nightwatch that if test fails in `before`, test
+      // would still be reported as passed with a exit code = 0. We'll have
+      // to let magellan know the test fails in this way
+      /* istanbul ignore next */
+      /*eslint no-process-exit:0 */
+      /*eslint no-magic-numbers:0 */
+      process.exit(100);
+    }
     // executor should eat it's own error in summerize()
-    this
-      .executorSummerize({
-        magellanBuildId: process.env.MAGELLAN_BUILD_ID,
-        testResult: numFailures === 0,
-        options: client.options
-      })
-      .then(() => {
-        // end nightwatch session explicitly
-        client.end();
-        if (self.appiumServer) {
-          return self.appiumServer.close();
-        } else {
-          return Promise.resolve();
-        }
-      })
-      .then(() => {
-        self.appiumServer = null;
-        if (self.isSupposedToFailInBefore) {
-          // there is a bug in nightwatch that if test fails in `before`, test
-          // would still be reported as passed with a exit code = 0. We'll have
-          // to let magellan know the test fails in this way
-          /* istanbul ignore next */
-          /*eslint no-process-exit:0 */
-          /*eslint no-magic-numbers:0 */
-          process.exit(100);
-        }
-        callback();
-      });
+    client.end(() => {
+      self
+        .executorSummerize({
+          magellanBuildId: process.env.MAGELLAN_BUILD_ID,
+          testResult: numFailures === 0,
+          options: client.options
+        })
+        .then(() => {
+          if (self.appiumServer) {
+            self.appiumServer
+              .close()
+              .then(() => {
+                self.appiumServer = null;
+                callback();
+              })
+              .catch((err) => {
+                callback();
+              });
+          } else {
+            callback();
+          }
+        });
+    });
+
+
   }
 };
 

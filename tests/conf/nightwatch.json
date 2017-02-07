@@ -46,8 +46,7 @@
     "phantomjs": {
       "desiredCapabilities": {
         "browserName": "phantomjs",
-        "javascriptEnabled": true,
-        "acceptSslCerts": true,
+        
         "phantomjs.binary.path": "./node_modules/phantomjs/bin/phantomjs"
       }
     },
@@ -64,6 +63,25 @@
     "chrome": {
       "desiredCapabilities": {
         "browserName": "chrome"
+      }
+    },
+    "appiummweb": {
+      "appium_host": "localhost",
+      "appium_port": 4723,
+      "desiredCapabilities": {
+        "browserName": "safari",
+        "appiumVersion": "1.6.3",
+        "automationName": "xcuitest",
+        "platformName": "iOS",
+        "platformVersion": "9.3",
+        "deviceName": "iPhone 6",
+        "waitForAppScript": "true"
+      },
+      "appium": {
+        "start_process": true
+      },
+      "selenium": {
+        "start_process": false
       }
     },
     "sauce": {

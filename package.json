@@ -98,6 +98,7 @@
     "yargs": "6.5.0"
   },
   "devDependencies": {
+    "appium": "^1.6.3",
     "nightwatch": "0.9.11",
     "testarmada-magellan": "^8.8.2",
     "testarmada-magellan-nightwatch-plugin": "^5.0.0",

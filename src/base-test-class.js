@@ -3,7 +3,7 @@ import _ from "lodash";
 import settings from "./settings";
 import Worker from "./worker/magellan";
 import ExecutorFactory from "./executor/factory";
-
+import { main as appium } from "appium/build/lib/main";
 
 const BaseTest = function (steps, customizedSettings = null) {
   /**
@@ -14,7 +14,8 @@ const BaseTest = function (steps, customizedSettings = null) {
   const self = this;
   const enumerables = ["before", "after", "beforeEach", "afterEach"];
 
-  this.isWorker = settings.isWorker;
+  // this.isWorker = settings.isWorker;
+  this.isWorker = false
   this.env = settings.env;
 
   if (customizedSettings) {
@@ -27,7 +28,6 @@ const BaseTest = function (steps, customizedSettings = null) {
     Object.defineProperty(self, k,
       { enumerable: true, value: v });
   });
-  console.log(this.env);
 
   const executor = new ExecutorFactory(this.env);
   this.executorCreateMetaData = executor.createMetaData;
@@ -51,7 +51,9 @@ const BaseTest = function (steps, customizedSettings = null) {
 };
 
 BaseTest.prototype = {
-  before(client) {
+  before(client, callback) {
+    const self = this;
+
     this.failures = [];
     this.passed = 0;
 
@@ -63,12 +65,28 @@ BaseTest.prototype = {
 
     this.isSupposedToFailInBefore = false;
 
-    if (this.isWorker) {
-      this.worker = new Worker({ nightwatch: client });
+    // if (this.isWorker) {
+    //   this.worker = new Worker({ nightwatch: client });
+    // }
+
+    if (client.globals.test_settings.appium
+      && client.globals.test_settings.appium.start_process) {
+      // we need to launch appium programmingly for each test
+      appium({
+        throwInsteadOfExit: true,
+        loglevel: "info:info",
+        // borrow selenium port here as magellan-nightwatch-plugin doesnt support appium for now
+        port: client.globals.test_settings.selenium_port
+      }).then((server) => {
+        self.appiumServer = server;
+        callback();
+      });
+    } else {
+      callback();
     }
   },
 
-  beforeEach(client) {
+  beforeEach(client, callback) {
     // Tell reporters that we are starting this test.
     // This logic would ideally go in the "before" block and not "beforeEach"
     // but Nightwatch does not give us access to the module (file) name in the
@@ -90,6 +108,8 @@ BaseTest.prototype = {
       settings.sessionId = client.sessionId;
       this.worker.emitSession(client.sessionId);
     }
+
+    callback();
   },
 
   afterEach(client, callback) {
@@ -145,9 +165,14 @@ BaseTest.prototype = {
       .then(() => {
         // end nightwatch session explicitly
         client.end();
-        return Promise.resolve();
+        if (self.appiumServer) {
+          return self.appiumServer.close();
+        } else {
+          return Promise.resolve();
+        }
       })
       .then(() => {
+        self.appiumServer = null;
         if (self.isSupposedToFailInBefore) {
           // there is a bug in nightwatch that if test fails in `before`, test
           // would still be reported as passed with a exit code = 0. We'll have

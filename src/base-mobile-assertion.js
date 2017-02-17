@@ -73,31 +73,22 @@ Base.prototype.checkConditions = function () {
   });
 };
 
-Base.prototype.pass = function (actual, expected) {
-  const pactual = actual || "visible";
-  const pexpected = pactual;
-  const message = this.successMessage;
-
+Base.prototype.pass = function (actual, expected, message) {
   this.time.totalTime = (new Date()).getTime() - this.startTime;
-  this.client.assertion(true, pactual, pexpected, util.format(message, this.time.totalTime), true);
 
-  if (this.cb) {
-    this.cb.apply(this.client.api, [actual]);
-  }
+  this.client.assertion(true, actual, expected,
+    util.format(this.message, this.time.totalTime), true);
   this.emit("complete");
 };
 
-Base.prototype.fail = function (actual, expected) {
+/*eslint max-params:["error", 4] */
+Base.prototype.fail = function (actual, expected, message, detail) {
   const pactual = actual || "not visible";
   const pexpected = expected || "visible";
-  const message = this.failureMessage;
-
   this.time.totalTime = (new Date()).getTime() - this.startTime;
-  this.client.assertion(false, pactual, pexpected, util.format(message, this.time.totalTime), true);
 
-  if (this.cb) {
-    this.cb.apply(this.client.api, []);
-  }
+  this.client.assertion(false, pactual, pexpected,
+    util.format(this.message, this.time.totalTime), true);
   this.emit("complete");
 };
 
@@ -107,8 +98,15 @@ Base.prototype.fail = function (actual, expected) {
  */
 /* istanbul ignore next */
 /*eslint no-unused-vars:0 */
-Base.prototype.do = function (value) {
-};
+Base.prototype.assert = function (actual, expected) { };
+
+/**
+ * All children have to implement do
+ *
+ */
+/* istanbul ignore next */
+/*eslint no-unused-vars:0 */
+Base.prototype.do = function (value) { };
 
 /**
  * All children have to implement command
@@ -116,7 +114,7 @@ Base.prototype.do = function (value) {
  */
 /* istanbul ignore next */
 /*eslint no-unused-vars:0 */
-Base.prototype.command = function (selector, cb) {
+Base.prototype.command = function (using, selector, expected, cb) {
   return this;
 };
 

@@ -18,7 +18,7 @@ MobileElAttrContains.prototype.do = function (value) {
         self.assert(result.value, self.expected);
       } else {
         self.fail("selenium return.status=0",
-          "selenium result.status=" + result.status,
+          `selenium result.status=${result.status}`,
           self.protocolFailureDetails);
       }
     });
@@ -35,19 +35,21 @@ MobileElAttrContains.prototype.assert = function (actual, expected) {
   }
 };
 
+/*eslint max-params:["error", 4] */
 MobileElAttrContains.prototype.command = function (using, selector, attr, expected) {
   this.selector = selector;
   this.using = using;
   this.attr = attr;
   this.expected = expected;
 
-  this.message = util.format("Testing if selector <%s:%s> attribute <%s> contains text <%s> after %d milliseconds ",
+  this.message = util.format("Testing if selector <%s:%s> attribute <%s> "
+    + "contains text <%s> after %d milliseconds ",
     this.using, this.selector, this.attr, this.expected);
-  this.failureDetails = "actual result:[ %s ], expected:[ " + this.expected + " ]";
+  this.failureDetails = `actual result:[ %s ], expected:[ ${this.expected} ]`;
   this.protocolFailureDetails = util.format("Selector <%s:%s> doesn't have such attribute %s",
     this.using, this.selector, this.attr);
-  this.notVisibleFailureMessage = "Selector <" + this.using + ":" + this.selector
-    + "> was not visible after %d milliseconds.";
+  this.notVisibleFailureMessage = `Selector <${this.using}:${this.selector
+    }> was not visible after %d milliseconds.`;
 
   this.startTime = (new Date()).getTime();
 

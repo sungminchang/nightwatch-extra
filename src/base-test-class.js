@@ -1,4 +1,3 @@
-import Promise from "bluebird";
 import _ from "lodash";
 import settings from "./settings";
 import Worker from "./worker/magellan";
@@ -16,10 +15,12 @@ const BaseTest = function (steps, customizedSettings = null) {
 
   this.isWorker = settings.isWorker;
   this.env = settings.env;
+  this.appium = appium;
 
   if (customizedSettings) {
     this.isWorker = customizedSettings.isWorker;
     this.env = customizedSettings.env;
+    this.appium = customizedSettings.appium;
   }
 
   // copy steps to self
@@ -71,7 +72,7 @@ BaseTest.prototype = {
     if (client.globals.test_settings.appium
       && client.globals.test_settings.appium.start_process) {
       // we need to launch appium programmingly for each test
-      appium({
+      return this.appium({
         throwInsteadOfExit: true,
         loglevel: "info:info",
         // borrow selenium port here as magellan-nightwatch-plugin doesnt support appium for now
@@ -81,7 +82,7 @@ BaseTest.prototype = {
         callback();
       });
     } else {
-      callback();
+      return callback();
     }
   },
 
@@ -161,7 +162,7 @@ BaseTest.prototype = {
       process.exit(100);
     }
     // executor should eat it's own error in summerize()
-    client.end(() => {
+    return client.end(() => {
       self
         .executorSummerize({
           magellanBuildId: process.env.MAGELLAN_BUILD_ID,
@@ -170,17 +171,17 @@ BaseTest.prototype = {
         })
         .then(() => {
           if (self.appiumServer) {
-            self.appiumServer
+            return self.appiumServer
               .close()
               .then(() => {
                 self.appiumServer = null;
                 callback();
               })
               .catch((err) => {
-                callback();
+                callback(err);
               });
           } else {
-            callback();
+            return callback();
           }
         });
     });

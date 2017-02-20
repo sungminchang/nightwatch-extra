@@ -15,6 +15,10 @@
     "prepublish": "npm run build:clean",
     "postinstall": "[ -d src ] && npm run build:clean || exit 0"
   },
+  "engines": {
+    "node": ">=4",
+    "npm": ">=3"
+  },
   "repository": {
     "type": "git",
     "url": "git@github.com:TestArmada/nightwatch-extra.git"

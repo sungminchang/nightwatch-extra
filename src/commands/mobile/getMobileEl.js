@@ -2,14 +2,14 @@ import util from "util";
 import BaseCommand from "../../base-mobile-command";
 
 const GetMobileEl = function (nightwatch = null) {
-  GetMobileEl.call(this, nightwatch);
+  BaseCommand.call(this, nightwatch);
   this.cmd = "getmobileel";
 };
 
 util.inherits(GetMobileEl, BaseCommand);
 
 GetMobileEl.prototype.do = function (value) {
-  this.pass(value);
+  this.pass();
 };
 
 GetMobileEl.prototype.command = function (using, selector, cb) {

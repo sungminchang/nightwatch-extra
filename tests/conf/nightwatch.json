@@ -8,7 +8,8 @@
     "./lib/commands/mobile"
   ],
   "custom_assertions_path": [
-    "./lib/assertions"
+    "./lib/assertions",
+    "./lib/assertions/mobile"
   ],
   "selenium": {
     "start_process": true,

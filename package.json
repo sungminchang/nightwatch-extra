@@ -107,7 +107,7 @@
     "testarmada-magellan": "^8.8.2",
     "testarmada-magellan-nightwatch-plugin": "^5.0.0",
     "phantomjs": "2.1.7",
-    "chromedriver": "2.26.1",
+    "chromedriver": "^2.27.0",
     "selenium-server": "3.0.1",
     "chai": "^3.5.0",
     "chai-as-promised": "^6.0.0",

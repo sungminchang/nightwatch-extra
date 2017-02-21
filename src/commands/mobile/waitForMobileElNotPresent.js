@@ -45,7 +45,7 @@ WaitForMobileElNotPresent.prototype.checkConditions = function () {
 
         self.pass("not visible", "not visible");
       } else {
-        self.fail("not visible", "visible");
+        self.fail("visible", "not visible");
       }
     } else {
       setTimeout(self.checkConditions, WAIT_INTERVAL);

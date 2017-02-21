@@ -56,13 +56,11 @@ Base.prototype.checkConditions = function () {
     }
 
     const elapsed = (new Date()).getTime() - self.startTime;
-
     if (self.seenCount >= SEEN_MAX || elapsed > MAX_TIMEOUT) {
       if (self.seenCount >= SEEN_MAX) {
         const elapse = (new Date()).getTime();
         self.time.executeAsyncTime = elapse - self.startTime;
         self.time.seleniumCallTime = 0;
-
         self.do(result.value);
       } else {
         self.fail();

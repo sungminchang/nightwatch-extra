@@ -73,7 +73,12 @@ BaseTest.prototype = {
     if (client.globals.test_settings.appium
       && client.globals.test_settings.appium.start_process) {
       // we need to launch appium programmingly for each test
-      const loglevel = !!settings.verbose ? "debug" : "info:info";
+      let loglevel = client.globals.test_settings.appium.loglevel ?
+        client.globals.test_settings.appium.loglevel : "info";
+
+      if (settings.verbose) {
+        loglevel = "debug";
+      }
 
       this.appium({
         throwInsteadOfExit: true,

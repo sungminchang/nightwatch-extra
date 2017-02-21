@@ -15,7 +15,6 @@ const BaseTest = function (steps, customizedSettings = null) {
 
   this.isWorker = settings.isWorker;
   this.env = settings.env;
-  this.appium = appium;
 
   if (customizedSettings) {
     this.isWorker = customizedSettings.isWorker;
@@ -78,6 +77,11 @@ BaseTest.prototype = {
 
       if (settings.verbose) {
         loglevel = "debug";
+      }
+
+      if (!this.appium) {
+        // not mocked
+        this.appium = appium;
       }
 
       this.appium({

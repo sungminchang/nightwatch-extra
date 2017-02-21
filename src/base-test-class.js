@@ -73,12 +73,12 @@ BaseTest.prototype = {
     if (client.globals.test_settings.appium
       && client.globals.test_settings.appium.start_process) {
       // we need to launch appium programmingly for each test
-      const loglevel = settings.verbose ? "debug" : "info:info";
+      const loglevel = !!settings.verbose ? "debug" : "info:info";
+
       this.appium({
         throwInsteadOfExit: true,
         loglevel,
         // borrow selenium port here as magellan-nightwatch-plugin doesnt support appium for now
-        address: client.globals.test_settings.selenium_host,
         port: client.globals.test_settings.selenium_port
       }).then((server) => {
         self.appiumServer = server;

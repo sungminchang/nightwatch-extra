@@ -51,6 +51,7 @@ const BaseTest = function (steps, customizedSettings = null) {
 };
 
 BaseTest.prototype = {
+  /*eslint-disable callback-return*/
   before(client, callback) {
     const self = this;
 
@@ -72,10 +73,10 @@ BaseTest.prototype = {
     if (client.globals.test_settings.appium
       && client.globals.test_settings.appium.start_process) {
       // we need to launch appium programmingly for each test
-      const loglevel = settings.verbose? "debug":"info:info";
-      return this.appium({
+      const loglevel = settings.verbose ? "debug" : "info:info";
+      this.appium({
         throwInsteadOfExit: true,
-        loglevel: loglevel,
+        loglevel,
         // borrow selenium port here as magellan-nightwatch-plugin doesnt support appium for now
         address: client.globals.test_settings.selenium_host,
         port: client.globals.test_settings.selenium_port
@@ -84,7 +85,7 @@ BaseTest.prototype = {
         callback();
       });
     } else {
-      return callback();
+      callback();
     }
   },
 
@@ -140,6 +141,7 @@ BaseTest.prototype = {
     callback();
   },
 
+  /*eslint-disable callback-return*/
   after(client, callback) {
     const self = this;
     const numFailures = self.failures.length;
@@ -164,7 +166,7 @@ BaseTest.prototype = {
       process.exit(100);
     }
     // executor should eat it's own error in summerize()
-    return client.end(() => {
+    client.end(() => {
       self
         .executorSummerize({
           magellanBuildId: process.env.MAGELLAN_BUILD_ID,
@@ -173,7 +175,7 @@ BaseTest.prototype = {
         })
         .then(() => {
           if (self.appiumServer) {
-            return self.appiumServer
+            self.appiumServer
               .close()
               .then(() => {
                 self.appiumServer = null;
@@ -183,7 +185,7 @@ BaseTest.prototype = {
                 callback(err);
               });
           } else {
-            return callback();
+            callback();
           }
         });
     });

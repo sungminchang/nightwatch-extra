@@ -47,7 +47,6 @@
     "phantomjs": {
       "desiredCapabilities": {
         "browserName": "phantomjs",
-        
         "phantomjs.binary.path": "./node_modules/phantomjs/bin/phantomjs"
       }
     },
@@ -58,7 +57,9 @@
     },
     "firefox": {
       "desiredCapabilities": {
-        "browserName": "firefox"
+        "browserName": "firefox",
+        "marionette": true,
+        "javascriptEnabled": true
       }
     },
     "chrome": {
@@ -67,8 +68,6 @@
       }
     },
     "appiummweb": {
-      "appium_host": "localhost",
-      "appium_port": 4723,
       "desiredCapabilities": {
         "browserName": "safari",
         "appiumVersion": "1.6.3",

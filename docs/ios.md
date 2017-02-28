@@ -38,7 +38,7 @@ Sample:
 
 ### 2. Config test entry
 
-The allowed configuration for `desiredCapabilities` could be found [here](https://github.com/appium/appium/blob/master/docs/en/writing-running-appium/running-tests.md).
+The allowed configuration for `desiredCapabilities` can be found [here](https://github.com/appium/appium/blob/master/docs/en/writing-running-appium/running-tests.md).
 
 if `appium.start_process` is configured and is true, `nightwatch-extra` will launch appium automatically at `http://${selenium_host}:${selenium_port}`. 
 

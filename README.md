@@ -13,14 +13,14 @@ Enhanced [nightwatchjs](http://nightwatchjs.org/) commands and assertions for te
 
 ### nightwatch enhancement for desktop web test
 
- 1. An automatical wait for element to be visible (using `:visible` pseudo) before executing every nightwatch command or assertion (done by injecting sizzlejs).
+ 1. An automatic wait for element to be visible (using `:visible` pseudo) before executing every nightwatch command or assertion (done by injecting sizzlejs).
  2. A base command with wait-for-visible feature for further extension.
  3. A base assertion with wait-for-visible feature for further extension.
  4. An easy-to-use [sizzlejs](http://sizzlejs.com/) selector option.
  5. Sets of enhanced commands and assertions
 
 ### nightwatch extension for mobile web native app test
- 1. Option to launch appium programmingly in base test for easy debugging and test integration.
+ 1. Option to launch appium programmatically in base test for easy debugging and test integration.
  2. A base command for native app test with wait-for-visible feature for further extension.
  3. A base assertion for native app test with wait-for-visible feature for further extension.
  4. Sets of enhanced commands and assertions for native app test.

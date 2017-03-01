@@ -1,9 +1,8 @@
-import Promise from "bluebird";
 import _ from "lodash";
 import settings from "./settings";
 import Worker from "./worker/magellan";
 import ExecutorFactory from "./executor/factory";
-
+import { main as appium } from "appium/build/lib/main";
 
 const BaseTest = function (steps, customizedSettings = null) {
   /**
@@ -20,6 +19,7 @@ const BaseTest = function (steps, customizedSettings = null) {
   if (customizedSettings) {
     this.isWorker = customizedSettings.isWorker;
     this.env = customizedSettings.env;
+    this.appium = customizedSettings.appium;
   }
 
   // copy steps to self
@@ -27,7 +27,6 @@ const BaseTest = function (steps, customizedSettings = null) {
     Object.defineProperty(self, k,
       { enumerable: true, value: v });
   });
-  console.log(this.env);
 
   const executor = new ExecutorFactory(this.env);
   this.executorCreateMetaData = executor.createMetaData;
@@ -51,7 +50,10 @@ const BaseTest = function (steps, customizedSettings = null) {
 };
 
 BaseTest.prototype = {
-  before(client) {
+  /*eslint-disable callback-return*/
+  before(client, callback) {
+    const self = this;
+
     this.failures = [];
     this.passed = 0;
 
@@ -65,6 +67,34 @@ BaseTest.prototype = {
 
     if (this.isWorker) {
       this.worker = new Worker({ nightwatch: client });
+    }
+
+    if (client.globals.test_settings.appium
+      && client.globals.test_settings.appium.start_process) {
+      // we need to launch appium programmingly for each test
+      let loglevel = client.globals.test_settings.appium.loglevel ?
+        client.globals.test_settings.appium.loglevel : "info";
+
+      if (settings.verbose) {
+        loglevel = "debug";
+      }
+
+      if (!this.appium) {
+        // not mocked
+        this.appium = appium;
+      }
+
+      this.appium({
+        throwInsteadOfExit: true,
+        loglevel,
+        // borrow selenium port here as magellan-nightwatch-plugin doesnt support appium for now
+        port: client.globals.test_settings.selenium_port
+      }).then((server) => {
+        self.appiumServer = server;
+        callback();
+      });
+    } else {
+      callback();
     }
   },
 
@@ -120,6 +150,7 @@ BaseTest.prototype = {
     callback();
   },
 
+  /*eslint-disable callback-return*/
   after(client, callback) {
     const self = this;
     const numFailures = self.failures.length;
@@ -134,31 +165,41 @@ BaseTest.prototype = {
       process.removeListener("message", self.worker.handleMessage);
     }
 
-
+    if (self.isSupposedToFailInBefore) {
+      // there is a bug in nightwatch that if test fails in `before`, test
+      // would still be reported as passed with a exit code = 0. We'll have
+      // to let magellan know the test fails in this way
+      /* istanbul ignore next */
+      /*eslint no-process-exit:0 */
+      /*eslint no-magic-numbers:0 */
+      process.exit(100);
+    }
     // executor should eat it's own error in summerize()
-    this
-      .executorSummerize({
-        magellanBuildId: process.env.MAGELLAN_BUILD_ID,
-        testResult: numFailures === 0,
-        options: client.options
-      })
-      .then(() => {
-        // end nightwatch session explicitly
-        client.end();
-        return Promise.resolve();
-      })
-      .then(() => {
-        if (self.isSupposedToFailInBefore) {
-          // there is a bug in nightwatch that if test fails in `before`, test
-          // would still be reported as passed with a exit code = 0. We'll have
-          // to let magellan know the test fails in this way
-          /* istanbul ignore next */
-          /*eslint no-process-exit:0 */
-          /*eslint no-magic-numbers:0 */
-          process.exit(100);
-        }
-        callback();
-      });
+    client.end(() => {
+      self
+        .executorSummerize({
+          magellanBuildId: process.env.MAGELLAN_BUILD_ID,
+          testResult: numFailures === 0,
+          options: client.options
+        })
+        .then(() => {
+          if (self.appiumServer) {
+            self.appiumServer
+              .close()
+              .then(() => {
+                self.appiumServer = null;
+                callback();
+              })
+              .catch((err) => {
+                callback(err);
+              });
+          } else {
+            callback();
+          }
+        });
+    });
+
+
   }
 };
 

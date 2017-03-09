@@ -1,8 +1,7 @@
 import _ from "lodash";
 import settings from "./settings";
 import Worker from "./worker/magellan";
-import ExecutorFactory from "./executor/factory";
-import { main as appium } from "appium/build/lib/main";
+import logger from "./util/logger";
 
 const BaseTest = function (steps, customizedSettings = null) {
   /**
@@ -28,10 +27,6 @@ const BaseTest = function (steps, customizedSettings = null) {
       { enumerable: true, value: v });
   });
 
-  const executor = new ExecutorFactory(this.env);
-  this.executorCreateMetaData = executor.createMetaData;
-  this.executorSummerize = executor.summerize;
-
   // copy before, beforeEach, afterEach, after to prototype
   _.forEach(enumerables, (k) => {
     const srcFn = self[k] || BaseTest.prototype[k];
@@ -40,13 +35,6 @@ const BaseTest = function (steps, customizedSettings = null) {
         { enumerable: true, value: srcFn });
     }
   });
-
-  // remove methods from nightwatch scan
-  Object.defineProperty(self, "executorCreateMetaData",
-    { enumerable: false, value: this.executorCreateMetaData });
-
-  Object.defineProperty(self, "executorSummerize",
-    { enumerable: false, value: this.executorSummerize });
 };
 
 BaseTest.prototype = {
@@ -60,13 +48,11 @@ BaseTest.prototype = {
     // we only want timeoutsAsyncScript to be set once the whole session to limit
     // the number of http requests we sent
     this.isAsyncTimeoutSet = false;
-
-    this.notifiedListenersOfStart = false;
-
     this.isSupposedToFailInBefore = false;
 
     if (this.isWorker) {
       this.worker = new Worker({ nightwatch: client });
+      process.addListener("message", this.worker.handleMessage);
     }
 
     if (client.globals.test_settings.appium
@@ -78,38 +64,33 @@ BaseTest.prototype = {
       if (settings.verbose) {
         loglevel = "debug";
       }
+      try {
+        if (!this.appium) {
+          // not mocked
+          /*eslint-disable global-require*/
+          this.appium = require("appium/build/lib/main").main;
+        }
 
-      if (!this.appium) {
-        // not mocked
-        this.appium = appium;
+        this.appium({
+          throwInsteadOfExit: true,
+          loglevel,
+          // borrow selenium port here as magellan-nightwatch-plugin doesnt support appium for now
+          port: client.globals.test_settings.selenium_port
+        }).then((server) => {
+          self.appiumServer = server;
+          callback();
+        });
+      } catch (e) {
+        // where appium isnt found
+        logger.err(e);
+        callback(e);
       }
-
-      this.appium({
-        throwInsteadOfExit: true,
-        loglevel,
-        // borrow selenium port here as magellan-nightwatch-plugin doesnt support appium for now
-        port: client.globals.test_settings.selenium_port
-      }).then((server) => {
-        self.appiumServer = server;
-        callback();
-      });
     } else {
       callback();
     }
   },
 
   beforeEach(client) {
-    // Tell reporters that we are starting this test.
-    // This logic would ideally go in the "before" block and not "beforeEach"
-    // but Nightwatch does not give us access to the module (file) name in the
-    // "before" block, so we have to put it here (hence the `notifiedListenersOfStart`
-    // flag, so that we only perform this update once per-file.)
-    if (!this.notifiedListenersOfStart && this.isWorker) {
-      this.worker.emitTestStart(client.currentTest.module);
-      process.addListener("message", this.worker.handleMessage);
-      this.notifiedListenersOfStart = true;
-    }
-
     if (!this.isAsyncTimeoutSet) {
       client.timeoutsAsyncScript(settings.JS_MAX_TIMEOUT);
       this.isAsyncTimeoutSet = true;
@@ -118,7 +99,10 @@ BaseTest.prototype = {
     // Note: Sometimes, the session hasn't been established yet but we have control.
     if (client.sessionId) {
       settings.sessionId = client.sessionId;
-      this.worker.emitSession(client.sessionId);
+
+      if (this.isWorker) {
+        this.worker.emitSession(client.sessionId);
+      }
     }
   },
 
@@ -145,6 +129,10 @@ BaseTest.prototype = {
     // Note: Sometimes, the session hasn't been established yet but we have control.
     if (client.sessionId) {
       settings.sessionId = client.sessionId;
+
+      if (this.isWorker) {
+        this.worker.emitSession(client.sessionId);
+      }
     }
 
     callback();
@@ -153,15 +141,8 @@ BaseTest.prototype = {
   /*eslint-disable callback-return*/
   after(client, callback) {
     const self = this;
-    const numFailures = self.failures.length;
 
     if (this.isWorker) {
-      self.worker.emitTestStop({
-        testName: client.currentTest.module,
-        testResult: numFailures === 0,
-        metaData: this.executorCreateMetaData({ sessionId: client.sessionId })
-      });
-
       process.removeListener("message", self.worker.handleMessage);
     }
 
@@ -176,30 +157,20 @@ BaseTest.prototype = {
     }
     // executor should eat it's own error in summerize()
     client.end(() => {
-      self
-        .executorSummerize({
-          magellanBuildId: process.env.MAGELLAN_BUILD_ID,
-          testResult: numFailures === 0,
-          options: client.options
-        })
-        .then(() => {
-          if (self.appiumServer) {
-            self.appiumServer
-              .close()
-              .then(() => {
-                self.appiumServer = null;
-                callback();
-              })
-              .catch((err) => {
-                callback(err);
-              });
-          } else {
+      if (self.appiumServer) {
+        self.appiumServer
+          .close()
+          .then(() => {
+            self.appiumServer = null;
             callback();
-          }
-        });
+          })
+          .catch((err) => {
+            callback(err);
+          });
+      } else {
+        callback();
+      }
     });
-
-
   }
 };
 

@@ -14,7 +14,7 @@ To disable the async injection feature explicitly, add following `syncModeBrowse
     "safari:10",
     "ipad
   ]
-}Ï
+}
 ```
 
 Syntax of each item in the list

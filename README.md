@@ -91,7 +91,7 @@ require("testarmada-nightwatch-extra/lib/base-test-class");    // ADD THIS LINE
 
 ### What is changed in Nightwatch-Extra@4
 
-Nightwatch-Extra@4 integrates `appium`, which means you can now use nightwatchjs to test in appium either locally or with a test environment provider, such as saucelabs, for mobile web or app test.
+`Nightwatch-Extra@4` makes `appium` an option besides `selenium-server`, which means you can now use nightwatchjs to test in appium either locally or with a test environment provider, such as saucelabs, for mobile web or app test.
 
  1. Launch appium server automatically when tests need it
  2. Provide mobile commands for app test with appium
@@ -103,17 +103,28 @@ Nightwatch-Extra@4 integrates `appium`, which means you can now use nightwatchjs
 
 #### Configuration change
 
-Make sure your `nightwatch.json` file has the following changes
-```javascript
-"custom_commands_path":[
-    "./node_modules/testarmada-nightwatch-extra/lib/commands",
-    "./node_modules/testarmada-nightwatch-extra/lib/commands/mobile"
-],
-"custom_assertions_path":[
-    "./node_modules/testarmada-nightwatch-extra/lib/assertions",
-    "./node_modules/testarmada-nightwatch-extra/lib/assertions/mobile"
-]
-```
+ 1. Make sure your `nightwatch.json` file has the following changes
+  ```javascript
+  "custom_commands_path":[
+      "./node_modules/testarmada-nightwatch-extra/lib/commands",
+      "./node_modules/testarmada-nightwatch-extra/lib/commands/mobile"
+  ],
+  "custom_assertions_path":[
+      "./node_modules/testarmada-nightwatch-extra/lib/assertions",
+      "./node_modules/testarmada-nightwatch-extra/lib/assertions/mobile"
+  ]
+  ```
+ 2. Add following code to your environment entry in `nightwatch.json`
+ ```javascript
+ "selenium": {
+   "start_process": false
+ },
+ "appium": {
+   "start_process": true
+ }
+ ```
+ 
+ Full example [nightwatch.json](https://github.com/TestArmada/boilerplate-nightwatch/blob/master/conf/nightwatch.json#L77)
 
 #### Code change
 
@@ -128,3 +139,9 @@ Make sure your `nightwatch.json` file has the following changes
  `after` needs to be called at the very first step in your customized `baseTest.after` if you have one. 
  
  Please refer to [Here](https://github.com/TestArmada/boilerplate-nightwatch/blob/master/lib/example-base-test-class.js#L42) as example.
+
+ 3. globals.js
+ 
+ To automatically handle appium server, a `globals.js` is required to start appium in nightwatchjs's global before and stop appium in global after. 
+ 
+ Please refer to the changes in [nightwatch.json](https://github.com/TestArmada/boilerplate-nightwatch/blob/master/conf/nightwatch.json#L18) and [globals.js](https://github.com/TestArmada/boilerplate-nightwatch/blob/master/lib/globals.js) for more info.

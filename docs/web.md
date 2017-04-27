@@ -12,7 +12,7 @@ To disable the async injection feature explicitly, add following `syncModeBrowse
 "globals": {
   "syncModeBrowserList": [
     "safari:10",
-    "ipad
+    "ipad"
   ]
 }
 ```

@@ -107,7 +107,7 @@
     "geckodriver": "^1.4.0",
     "nightwatch": "^0.9.11",
     "testarmada-magellan": "^10.0.0",
-    "testarmada-magellan-local-executor": "^1.0.0",
+    "testarmada-magellan-local-executor": "^2.0.0",
     "testarmada-magellan-nightwatch-plugin": "^6.0.0",
     "testarmada-magellan-saucelabs-executor": "^1.0.0",
     "phantomjs": "2.1.7",

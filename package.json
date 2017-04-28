@@ -108,7 +108,7 @@
     "nightwatch": "^0.9.11",
     "testarmada-magellan": "^10.0.0",
     "testarmada-magellan-local-executor": "^1.0.0",
-    "testarmada-magellan-nightwatch-plugin": "^6.0.0",
+    "testarmada-magellan-nightwatch-plugin": "^7.0.0",
     "testarmada-magellan-saucelabs-executor": "^1.0.0",
     "phantomjs": "2.1.7",
     "chromedriver": "^2.27.0",

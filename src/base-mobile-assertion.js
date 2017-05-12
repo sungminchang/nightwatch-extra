@@ -7,7 +7,7 @@ import settings from "./settings";
 // wait for WAIT_INTERVAL milliseconds between each visibility test.
 const MAX_TIMEOUT = settings.COMMAND_MAX_TIMEOUT;
 const WAIT_INTERVAL = settings.WAIT_INTERVAL;
-const SEEN_MAX = settings.SEEN_MAX;
+const SEEN_MAX = settings.MOBILE_SEEN_MAX;
 
 const Base = function (nightwatch = null) {
   EventEmitter.call(this);

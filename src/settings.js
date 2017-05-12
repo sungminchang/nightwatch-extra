@@ -100,6 +100,7 @@ const env = argv.env;
 export default {
   WAIT_INTERVAL: 100,
   JS_WAIT_INTERNAL: 100,
+  MOBILE_SEEN_MAX: 1,
   SEEN_MAX: 3,
   JS_SEEN_MAX: 3,
   COMMAND_MAX_TIMEOUT: timeoutValue,

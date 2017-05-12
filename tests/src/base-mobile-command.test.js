@@ -98,7 +98,7 @@ describe("Base mobile command", () => {
       baseCommand.expected = "some_fake_value";
       baseCommand.startTime = (new Date()).getTime();
       baseCommand.do = (value) => {
-        expect(baseCommand.seenCount).to.equal(3);
+        expect(baseCommand.seenCount).to.equal(1);
         expect(value.ELEMENT).to.equal("83653D51-DC1A-43E0-828A-2FA4F546849C");
         done();
       };

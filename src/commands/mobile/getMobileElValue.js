@@ -9,10 +9,10 @@ const GetMobileElValue = function (nightwatch = null) {
 util.inherits(GetMobileElValue, BaseCommand);
 
 GetMobileElValue.prototype.do = function (value) {
-  var self = this;
+  const self = this;
 
   this.client.api
-    .elementIdValue(value.ELEMENT, function (result) {
+    .elementIdValue(value.ELEMENT, (result) => {
       if (result.status === 0) {
         self.pass(result.value);
       } else {

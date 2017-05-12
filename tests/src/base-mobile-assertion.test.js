@@ -99,7 +99,7 @@ describe("Base mobile assertion", () => {
         baseAssertion.assert(value)
       };
       baseAssertion.assert = (value, expected) => {
-        expect(baseAssertion.seenCount).to.equal(3);
+        expect(baseAssertion.seenCount).to.equal(1);
         expect(value.ELEMENT).to.equal("83653D51-DC1A-43E0-828A-2FA4F546849C");
         done();
       };

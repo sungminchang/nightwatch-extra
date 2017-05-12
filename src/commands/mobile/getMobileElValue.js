@@ -40,4 +40,4 @@ GetMobileElValue.prototype.command = function (using, selector, cb) {
   return this;
 };
 
-module.exports = GetMobileElsUnderEl;
+module.exports = GetMobileElValue;

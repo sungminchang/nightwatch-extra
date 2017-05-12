@@ -1,18 +1,27 @@
 import util from "util";
 import BaseCommand from "../../base-mobile-command";
 
-const GetMobileEl = function (nightwatch = null) {
+const GetMobileElValue = function (nightwatch = null) {
   BaseCommand.call(this, nightwatch);
-  this.cmd = "getmobileel";
+  this.cmd = "getmobileels";
 };
 
-util.inherits(GetMobileEl, BaseCommand);
+util.inherits(GetMobileElValue, BaseCommand);
 
-GetMobileEl.prototype.do = function (value) {
-  this.pass(value);
+GetMobileElValue.prototype.do = function (value) {
+  const self = this;
+
+  this.client.api
+    .elementIdValue(value.ELEMENT, (result) => {
+      if (result.status === 0) {
+        self.pass(result.value);
+      } else {
+        self.fail();
+      }
+    });
 };
 
-GetMobileEl.prototype.command = function (using, selector, cb) {
+GetMobileElValue.prototype.command = function (using, selector, cb) {
   this.selector = selector;
   this.using = using;
   this.cb = cb;
@@ -31,4 +40,4 @@ GetMobileEl.prototype.command = function (using, selector, cb) {
   return this;
 };
 
-module.exports = GetMobileEl;
+module.exports = GetMobileElValue;

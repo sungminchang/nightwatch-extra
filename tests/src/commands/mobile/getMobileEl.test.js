@@ -70,8 +70,8 @@ describe("GetMobileEl", () => {
   it("Pass", (done) => {
     clientMock.assertion = function (result, actual, expected, message, abortonfail) {
       expect(result).to.equal(true);
-      expect(actual).to.equal("visible");
-      expect(expected).to.equal("visible");
+      expect(actual).to.be.an("object");
+      expect(expected).to.be.an("object");
       done();
     };
 

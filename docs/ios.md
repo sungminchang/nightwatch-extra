@@ -43,7 +43,7 @@ You can also use the following block as template if you want to run an iOS nativ
 "appiumapp": {
     "skip_testcases_on_fail": true,
     "desiredCapabilities": {
-        "app": "${PATH_TO_YOUR_LOCAL_APP}",
+        "app": "${PATH_TO_YOUR_LOCAL_.APP_APP}",
         "appiumVersion": "1.6.3",
         "automationName": "xcuitest",
         "platformName": "iOS",

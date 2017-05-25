@@ -103,7 +103,7 @@
     "yargs": "6.5.0"
   },
   "devDependencies": {
-    "appium": "^1.6.3",
+    "appium": "^1.6.5",
     "geckodriver": "^1.4.0",
     "nightwatch": "^0.9.11",
     "testarmada-magellan": "^10.0.0",

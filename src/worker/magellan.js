@@ -3,21 +3,23 @@ export default class MagellanWorker {
     this.nightwatch = nightwatch;
   }
 
-  emitSession(sessionId) {
+  emitMetadata(metadata) {
     /* istanbul ignore if */
-    if (process.send) {
-      let url = "https://saucelabs.com/tests/";
-
-      if (this.nightwatch.globals.resultUrlPrefix) {
-        url = this.nightwatch.globals.resultUrlPrefix;
+    // nightwatch will add response from /session to capabilities
+    // we need that info to compose the result sometimes
+    /*
+      metadata: {
+        sessionId: sessionId
+        capabilities: capabilities
       }
+     */
+    if (process.send) {
+      // notice: each executor will generate report url by itself
+      //         only meta data is emitted here
 
       process.send({
         type: "test-meta-data",
-        metadata: {
-          resultURL: url + sessionId,
-          sessionId
-        }
+        metadata
       });
     }
   }

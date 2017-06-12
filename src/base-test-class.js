@@ -64,7 +64,10 @@ BaseTest.prototype = {
       settings.sessionId = client.sessionId;
 
       if (this.isWorker) {
-        this.worker.emitSession(client.sessionId);
+        this.worker.emitMetadata({
+          sessionId: settings.sessionId,
+          capabilities: client.capabilities
+        });
       }
     }
   },
@@ -94,7 +97,10 @@ BaseTest.prototype = {
       settings.sessionId = client.sessionId;
 
       if (this.isWorker) {
-        this.worker.emitSession(client.sessionId);
+        this.worker.emitMetadata({
+          sessionId: settings.sessionId,
+          capabilities: client.capabilities
+        });
       }
     }
 

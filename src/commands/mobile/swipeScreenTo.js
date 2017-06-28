@@ -17,6 +17,7 @@ SwipeScreenTo.prototype.do = function () {
     data: {
       "actions": [
         { "action": "press", "options": { "x": this.fx, "y": this.fy } },
+        { "action": "wait", "options": { "ms": 800 } },
         { "action": "moveTo", "options": { "x": this.tx, "y": this.ty } },
         { "action": "release", "options": {} }]
     }

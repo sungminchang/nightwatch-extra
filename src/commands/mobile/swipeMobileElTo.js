@@ -17,6 +17,7 @@ SwipeMobileElTo.prototype.do = function (value) {
     data: {
       "actions": [
         { "action": "press", "options": { "element": value.ELEMENT } },
+        { "action": "wait", "options": { "ms": 800 } },
         { "action": "moveTo", "options": { "x": this.x, "y": this.y } },
         { "action": "release", "options": {} }]
     }

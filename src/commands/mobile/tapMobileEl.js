@@ -25,6 +25,7 @@ TouchMobileEl.prototype.checkConditions = function () {
     data: {
       "actions": [
         { "action": "press", "options": { "x": this.x, "y": this.y } },
+        { "action": "wait", "options": { "ms": 800 } },
         { "action": "release", "options": {} }]
     }
   };

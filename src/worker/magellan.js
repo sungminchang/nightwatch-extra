@@ -27,7 +27,8 @@ export default class MagellanWorker {
   handleMessage(message) {
     /* istanbul ignore if */
     if (message && message.signal === "bail") {
-      this.nightwatch.assert.equal(false, true, message.customMessage || "Test killed.");
+      // instead of counting on assertion, we throws error out and fail the test directly
+      throw new Error(message.customMessage || "Test killed.");
     }
   }
 }

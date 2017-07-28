@@ -26,8 +26,9 @@ module.exports = new Test({
       .setElValue("[name='q']", "xixixix")
       .clearElValue("[name='q']")
       .setElValue("[name='q']", "hahaha")
-      .clickEl("#sfdiv button")
-      .takeElScreenshot("#resultStats", "About")
+      .clickEl("#hplogo")
+      .clickEl("[value='Google Search']:visible")
+      // .takeElScreenshot("#resultStats", "About")
       .assert.elContainsText("#resultStats", "About");
   },
 

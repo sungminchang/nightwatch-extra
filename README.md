@@ -12,7 +12,6 @@ Enhanced [nightwatchjs](http://nightwatchjs.org/) commands and assertions for te
  1. A appium integrated base test for customization.
 
 ### nightwatch enhancement for desktop web test
-
  1. An automatic wait for element to be visible (using `:visible` pseudo) before executing every nightwatch command or assertion (done by injecting sizzlejs).
  2. A base command with wait-for-visible feature for further extension.
  3. A base assertion with wait-for-visible feature for further extension.
@@ -24,6 +23,21 @@ Enhanced [nightwatchjs](http://nightwatchjs.org/) commands and assertions for te
  2. A base command for native app test with wait-for-visible feature for further extension.
  3. A base assertion for native app test with wait-for-visible feature for further extension.
  4. Sets of enhanced commands and assertions for native app test.
+
+### ./bin/owl
+./bin/owl can generate nightwatch compatible [wd](https://github.com/admc/wd) commands for you so that you can use nightwatch runner to run test written in wd format. All nightwatch compatible wd commands follow the same nightwatch standard and can be chained as plain nightwatch commands.
+
+All wd commands will be transformed into nightwatch custom command files with name `wd${command}.js` and capitalized first letter in wd command name in the given folder. For example wd command `element` will be transformed into file `wdElement.js`, and `clickElement` will be transformed into `wdClickElement.js`.
+
+The command parameters will stay the same. 
+
+```js
+// wd command
+.element('accessibility id', 'signin', (el) => console.log(el));
+
+// nightwatch command
+.wdElement('accessibility id', 'signin', (el) => console.log(el));
+```
 
 ## Usage
 
@@ -55,6 +69,14 @@ For desktop and mobile web test, please refer to [this page](docs/web.md).
 ### iOS app test
 
 For iOS app test, please refer to [this page](docs/ios.md).
+
+### ./bin/owl
+After `npm install` ./bin/owl can be found under `./node_modules/.bin/owl`. To use ./bin/owl latet [wd](https://github.com/admc/wd) is required. Please do `npm install wd --save` in your repo firstly.
+
+To create wd commands under ./lib/custom_command
+```
+./bin/owl --output ./lib/custom_command --config ${path to nightwatch.json}
+```
 
 ## *Important migration notice*
 

@@ -104,7 +104,7 @@
     "sanitize-filename": "1.6.1",
     "statsd-client": "^0.2.2",
     "testarmada-tree-kill": "^2.0.1",
-    "yargs": "6.5.0"
+    "yargs": "10.0.3"
   },
   "devDependencies": {
     "appium": "^1.6.3",

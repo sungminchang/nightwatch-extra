@@ -113,7 +113,7 @@
     "testarmada-magellan": "^10.0.0",
     "testarmada-magellan-local-executor": "^1.0.0",
     "testarmada-magellan-nightwatch-plugin": "^6.0.0",
-    "testarmada-magellan-saucelabs-executor": "^1.0.0",
+    "testarmada-magellan-saucelabs-executor": "^4.11.3",
     "testarmada-magellan-browserstack-executor": "1.0.0-beta3",
     "phantomjs": "2.1.7",
     "chromedriver": "^2.27.0",

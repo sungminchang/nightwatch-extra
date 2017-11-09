@@ -12,6 +12,8 @@ import jsInjection from "./injections/js-injection";
 import stats from "./util/stats";
 import logger from "./util/logger";
 
+import errorDictionary from "./errorDictionary";
+
 // Wait until we've seen a selector as :visible SEEN_MAX times, with a
 // wait for WAIT_INTERVAL milliseconds between each visibility test.
 const MAX_TIMEOUT = settings.COMMAND_MAX_TIMEOUT;
@@ -46,6 +48,8 @@ const Base = function (nightwatch = null, customizedSettings = null) {
   if (customizedSettings) {
     this.syncModeBrowserList = customizedSettings.syncModeBrowserList;
   }
+
+  errorDictionary.init(this.client.options.errorDictionary);
 };
 
 util.inherits(Base, EventEmitter);
@@ -218,7 +222,7 @@ Base.prototype.fail = function (actual, expected, message, detail) {
   const fmtmessage = (this.isSync ? "[sync mode] " : "") + this.message;
 
   this.client.assertion(false, actual, expected,
-    util.format(fmtmessage, this.time.totalTime), true);
+    errorDictionary.format(util.format(fmtmessage, this.time.totalTime)), true);
   this.emit("complete");
 };
 

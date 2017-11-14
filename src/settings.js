@@ -105,6 +105,10 @@ export default {
   JS_SEEN_MAX: 3,
   COMMAND_MAX_TIMEOUT: timeoutValue,
   JS_MAX_TIMEOUT: jsTimeoutValue,
+  SERVER_ERROR: 'SERVER_ERROR',
+  SELECTOR_NOT_FOUND: 'SELECTOR_NOT_FOUND',
+  SELECTOR_NOT_VISIBLE: 'SELECTOR_NOT_VISIBLE',
+  SELENIUM_ERROR: 'SELENIUM_ERROR',
 
   // true if test is launched by a specific runner other than nightwatch, such as magellan
   isWorker: !!argv.worker,

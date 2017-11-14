@@ -136,7 +136,11 @@ Base.prototype.checkConditions = function () {
           self.time.seleniumCallTime = 0;
           self.assert(result.value.value, self.expected);
         } else {
-          self.fail(null, null, self.notVisibleFailureMessage);
+          if(result.selectorLength === 1){
+            self.fail("[not visible]", this.expected, this.message + "[" + settings.SELECTOR_NOT_VISIBLE + "]");
+          }else{
+            self.fail("[not found]", this.expected, this.message + "[" + settings.SELECTOR_NOT_FOUND + "]");
+          }
         }
       } else {
         setTimeout(self.checkConditions, WAIT_INTERVAL);
@@ -195,7 +199,7 @@ Base.prototype.execute = function (fn, args, callback) {
         resultDisplay = util.inspect(result, false, null);
       }
       logger.warn(clc.yellowBright(resultDisplay));
-      self.fail();
+      self.fail("[selenium error]", this.expected, resultDisplay + "[" + settings.SELENIUM_ERROR + "]");
     }
   });
 };
@@ -219,7 +223,7 @@ Base.prototype.pass = function (actual, expected, message) {
 /*eslint max-params:["error", 4] */
 Base.prototype.fail = function (actual, expected, message, detail) {
   this.time.totalTime = (new Date()).getTime() - this.startTime;
-  const fmtmessage = (this.isSync ? "[sync mode] " : "") + this.message;
+  const fmtmessage = (this.isSync ? "[sync mode] " : "") + (message || this.message);
 
   this.client.assertion(false, actual, expected,
     errorDictionary.format(util.format(fmtmessage, this.time.totalTime)), true);

@@ -134,7 +134,11 @@ Base.prototype.checkConditions = function () {
           self.time.seleniumCallTime = 0;
           self.do(result.value.value);
         } else {
-          self.fail();
+          if(result.selectorLength === 1){
+            self.fail("[not visible]", "[visible]", this.failureMessage + "[" + settings.SELECTOR_NOT_VISIBLE + "]");
+          }else{
+            self.fail("[not found]", "[found]", this.failureMessage + "[" + settings.SELECTOR_NOT_FOUND + "]");
+          }
         }
       } else {
         setTimeout(self.checkConditions, WAIT_INTERVAL);
@@ -193,7 +197,7 @@ Base.prototype.execute = function (fn, args, callback) {
         resultDisplay = util.inspect(result, false, null);
       }
       logger.warn(clc.yellowBright(resultDisplay));
-      self.fail();
+      self.fail("[selenium error]", "[visible]", resultDisplay + "[" + settings.SELENIUM_ERROR + "]");
     }
   });
 };
@@ -220,10 +224,10 @@ Base.prototype.pass = function (actual, expected) {
   this.emit("complete");
 };
 
-Base.prototype.fail = function (actual, expected) {
+Base.prototype.fail = function (actual, expected, failureMessage) {
   const pactual = actual || "not visible";
   const pexpected = expected || "visible";
-  const message = (this.isSync ? "[sync mode] " : "") + this.failureMessage;
+  const message = (this.isSync ? "[sync mode] " : "") + (failureMessage || this.failureMessage);
 
   this.time.totalTime = (new Date()).getTime() - this.startTime;
   this.client.assertion(false, pactual, pexpected, errorDictionary.format(util.format(message, this.time.totalTime)), true);

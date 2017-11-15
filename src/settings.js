@@ -109,6 +109,7 @@ export default {
   SELECTOR_NOT_FOUND: 'SELECTOR_NOT_FOUND',
   SELECTOR_NOT_VISIBLE: 'SELECTOR_NOT_VISIBLE',
   SELENIUM_ERROR: 'SELENIUM_ERROR',
+  BAD_GATEWAY: 'BAD_GATEWAY',
 
   // true if test is launched by a specific runner other than nightwatch, such as magellan
   isWorker: !!argv.worker,

@@ -481,6 +481,51 @@ describe("Base assertion", () => {
       baseAssertion.checkConditions();
     });
 
+    it("Fail with Bad Gateway", (done) => {
+      clientMock.api.execute = (fn, args, callback) => {
+        callback({
+          state: 'success',
+          sessionId: '60c692d2-7b53-4d43-a340-8d6133af13a8',
+          hCode: 1895546026,
+          value:
+          {
+            isVisible: false,
+            isVisibleStrict: false,
+            seens: 0,
+            selectorLength: 0,
+            selectorVisibleLength: 0,
+            value: {
+              sel: '#testDiv2',
+              value: null
+            }
+          },
+          class: 'org.openqa.selenium.remote.Response',
+          status: 0
+        });
+      };
+
+      clientMock.api.title = (callback) => {
+        callback({
+          value:"Bad Gateway"
+        })
+      }
+
+      baseAssertion = new BaseAssertion(clientMock, {
+        syncModeBrowserList: ["chrome:55", "iphone"]
+      });
+      baseAssertion.seenCount = 0;
+      baseAssertion.expected = "some_fake_value";
+      baseAssertion.startTime = (new Date()).getTime();
+      baseAssertion.fail = (value, expected) => {
+        expect(baseAssertion.seenCount).to.equal(0);
+        expect(expected).to.equal("some_fake_value");
+        expect(value).to.equal("[bad gateway]");
+        done();
+      };
+      baseAssertion.decide();
+      baseAssertion.checkConditions();
+    });
+
     it("Fail with not found", (done) => {
       clientMock.api.execute = (fn, args, callback) => {
         callback({
@@ -503,6 +548,12 @@ describe("Base assertion", () => {
           status: 0
         });
       };
+
+      clientMock.api.title = (callback) => {
+        callback({
+          value:"good"
+        })
+      }
 
       baseAssertion = new BaseAssertion(clientMock, {
         syncModeBrowserList: ["chrome:55", "iphone"]

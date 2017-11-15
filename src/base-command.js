@@ -137,7 +137,13 @@ Base.prototype.checkConditions = function () {
           if(result.selectorLength === 1){
             self.fail("[not visible]", "[visible]", this.failureMessage + "[" + settings.SELECTOR_NOT_VISIBLE + "]");
           }else{
-            self.fail("[not found]", "[found]", this.failureMessage + "[" + settings.SELECTOR_NOT_FOUND + "]");
+            self.client.api.title(function(title){
+              if(title.value === 'Bad Gateway' || title.value === 'Can\'t reach this page'){
+                self.fail("[bad gateway]", "[found]", self.failureMessage + "[" + settings.BAD_GATEWAY + "]");
+              }else{
+                self.fail("[not found]", "[found]", self.failureMessage + "[" + settings.SELECTOR_NOT_FOUND + "]");
+              }
+            });
           }
         }
       } else {

@@ -47,7 +47,7 @@ const Base = function (nightwatch = null, customizedSettings = null) {
     this.syncModeBrowserList = customizedSettings.syncModeBrowserList;
   }
 
-  errorDictionary.init(this.client.options.errorDictionary);
+  errorDictionary.init(process.env.NIGHTWATCH_ERROR_DICTIONARY || this.client.options.errorDictionary);
 };
 
 util.inherits(Base, EventEmitter);

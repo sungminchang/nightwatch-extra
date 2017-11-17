@@ -48,6 +48,13 @@ const Base = function (nightwatch = null, customizedSettings = null) {
   }
 
   errorDictionary.init(process.env.NIGHTWATCH_ERROR_DICTIONARY || this.client.options.errorDictionary);
+
+  if(this.client && this.client.queue && typeof(this.client.queue.instance === 'function')){
+    let instance = this.client.queue.instance();
+    if(instance && instance.currentNode){
+      this.stackTrace = instance.currentNode.stackTrace;
+    }
+  }
 };
 
 util.inherits(Base, EventEmitter);
@@ -233,10 +240,10 @@ Base.prototype.pass = function (actual, expected) {
 Base.prototype.fail = function (actual, expected, failureMessage) {
   const pactual = actual || "not visible";
   const pexpected = expected || "visible";
-  const message = (this.isSync ? "[sync mode] " : "") + (failureMessage || this.failureMessage);
+  const message = errorDictionary.format(util.format((this.isSync ? "[sync mode] " : "") + (failureMessage || this.failureMessage), this.time.totalTime));
 
   this.time.totalTime = (new Date()).getTime() - this.startTime;
-  this.client.assertion(false, pactual, pexpected, errorDictionary.format(util.format(message, this.time.totalTime)), true);
+  this.client.assertion(false, pactual, pexpected, message, true, this.stackTrace);
 
   if (this.cb) {
     this.cb.apply(this.client.api, []);

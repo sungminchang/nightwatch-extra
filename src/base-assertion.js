@@ -50,6 +50,13 @@ const Base = function (nightwatch = null, customizedSettings = null) {
   }
 
   errorDictionary.init(process.env.NIGHTWATCH_ERROR_DICTIONARY || this.client.options.errorDictionary);
+
+  if(this.client && this.client.queue && typeof(this.client.queue.instance === 'function')){
+    let instance = this.client.queue.instance();
+    if(instance && instance.currentNode){
+      this.stackTrace = instance.currentNode.stackTrace;
+    }
+  }
 };
 
 util.inherits(Base, EventEmitter);
@@ -229,10 +236,8 @@ Base.prototype.pass = function (actual, expected, message) {
 /*eslint max-params:["error", 4] */
 Base.prototype.fail = function (actual, expected, message, detail) {
   this.time.totalTime = (new Date()).getTime() - this.startTime;
-  const fmtmessage = (this.isSync ? "[sync mode] " : "") + (message || this.message);
-
-  this.client.assertion(false, actual, expected,
-    errorDictionary.format(util.format(fmtmessage, this.time.totalTime)), true);
+  const fmtmessage = errorDictionary.format(util.format((this.isSync ? "[sync mode] " : "") + (message || this.message), this.time.totalTime));
+  this.client.assertion(false, actual, expected, fmtmessage, true, this.stackTrace);
   this.emit("complete");
 };
 

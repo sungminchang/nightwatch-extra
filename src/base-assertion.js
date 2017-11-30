@@ -49,8 +49,6 @@ const Base = function (nightwatch = null, customizedSettings = null) {
     this.syncModeBrowserList = customizedSettings.syncModeBrowserList;
   }
 
-  errorDictionary.init(process.env.NIGHTWATCH_ERROR_DICTIONARY || this.client.options.errorDictionary);
-
   if(this.client && this.client.queue && typeof(this.client.queue.instance === 'function')){
     let instance = this.client.queue.instance();
     if(instance && instance.currentNode){
@@ -144,13 +142,13 @@ Base.prototype.checkConditions = function () {
           self.assert(result.value.value, self.expected);
         } else {
           if(result.selectorLength === 1){
-            self.fail("[not visible]", self.expected, self.message + "[" + settings.SELECTOR_NOT_VISIBLE + "]");
+            self.fail("[not visible]", self.expected, self.message + "[SELECTOR_NOT_VISIBLE]");
           }else{
             self.client.api.title(function(title){
               if(title.value === 'Bad Gateway' || title.value === 'Can\'t reach this page'){
-                self.fail("[bad gateway]", self.expected, self.message + "[" + settings.BAD_GATEWAY + "]");
+                self.fail("[bad gateway]", self.expected, self.message + "[BAD_GATEWAY]");
               }else{
-                self.fail("[not found]", self.expected, self.message + "[" + settings.SELECTOR_NOT_FOUND + "]");
+                self.fail("[not found]", self.expected, self.message + "[SELECTOR_NOT_FOUND ]");
               }
             });
           }
@@ -212,7 +210,7 @@ Base.prototype.execute = function (fn, args, callback) {
         resultDisplay = util.inspect(result, false, null);
       }
       logger.warn(clc.yellowBright(resultDisplay));
-      self.fail("[selenium error]", this.expected, resultDisplay + "[" + settings.SELENIUM_ERROR + "]");
+      self.fail("[selenium error]", this.expected, resultDisplay + "[SELENIUM_ERROR]");
     }
   });
 };

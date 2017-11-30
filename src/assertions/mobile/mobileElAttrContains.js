@@ -14,7 +14,9 @@ MobileElAttrContains.prototype.do = function (value) {
 
   this.client.api
     .elementIdAttribute(value.ELEMENT, this.attr, (result) => {
-      if (result.status === 0) {
+      if(result.value === null){
+        self.fail("[attribute not found]", self.expected, self.message + "[ATTRIBUTE_NOT_FOUND]");
+      } else if (result.status === 0) {
         self.assert(result.value, self.expected);
       } else {
         self.fail("selenium return.status=0",

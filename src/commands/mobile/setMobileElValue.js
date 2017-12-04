@@ -16,7 +16,7 @@ SetMobileElValue.prototype.do = function (value) {
       if (result.status === 0) {
         self.pass(result.value);
       } else {
-        self.fail();
+        self.fail(null, null, result.error);
       }
     });
 };

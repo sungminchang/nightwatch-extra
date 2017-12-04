@@ -43,7 +43,8 @@
           "ipad"
         ],
         "resultUrlPrefix": "https://saucelabs.com/tests/"
-      }
+      },
+      "max_timeout": 1000
     },
     "phantomjs": {
       "desiredCapabilities": {

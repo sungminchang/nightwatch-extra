@@ -16,7 +16,15 @@ GetMobileElValue.prototype.do = function (value) {
       if (result.status === 0) {
         self.pass(result.value);
       } else {
-        self.fail();
+        let errorMsg = null;
+        if(result.error){
+          if(result.error.indexOf("not visible") > -1){
+            errorMsg = self.failureMessage + "[SELECTOR_NOT_VISIBLE]";
+          }else{
+            errorMsg = self.failureMessage + "[" + result.error + "]";
+          }
+        }
+        self.fail(null, null, errorMsg);
       }
     });
 };

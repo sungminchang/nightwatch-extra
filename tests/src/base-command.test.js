@@ -284,8 +284,8 @@ describe("Base command", () => {
 
         clientMock.assertion = function (result, actual, expected, message, abortonfail) {
           expect(result).to.equal(false);
-          expect(actual).to.equal("not visible");
-          expect(expected).to.equal("visible");
+          expect(actual).to.equal("[selenium error]");
+          expect(expected).to.equal("[visible]");
           expect(abortonfail).to.equal(true);
         };
 
@@ -375,8 +375,8 @@ describe("Base command", () => {
 
         clientMock.assertion = function (result, actual, expected, message, abortonfail) {
           expect(result).to.equal(false);
-          expect(actual).to.equal("not visible");
-          expect(expected).to.equal("visible");
+          expect(actual).to.equal("[selenium error]");
+          expect(expected).to.equal("[visible]");
           expect(abortonfail).to.equal(true);
         };
 
@@ -470,6 +470,130 @@ describe("Base command", () => {
       baseCommand.do = function (value) {
         expect(baseCommand.seenCount).to.equal(3);
         expect(value).to.equal("magellan_selector_2f38e1cf");
+        done();
+      };
+      baseCommand.decide();
+      baseCommand.checkConditions();
+    });
+
+
+    it("Fail with Bad Gateway", (done) => {
+      clientMock.api.execute = function (fn, args, callback) {
+        callback({
+          state: 'success',
+          sessionId: '60c692d2-7b53-4d43-a340-8d6133af13a8',
+          hCode: 1895546026,
+          value:
+          {
+            isVisible: false,
+            isVisibleStrict: false,
+            seens: 0,
+            selectorLength: 0,
+            selectorVisibleLength: 0,
+            value: {
+              sel: '#testDiv2',
+              value: null
+            }
+          },
+          class: 'org.openqa.selenium.remote.Response',
+          status: 0
+        });
+      };
+
+      clientMock.api.title = (callback) => {
+        callback({
+          value:"Bad Gateway"
+        })
+      }
+
+      baseCommand = new BaseCommand(clientMock, {
+        syncModeBrowserList: ["chrome:55", "iphone"]
+      });
+      baseCommand.seenCount = 0;
+      baseCommand.startTime = (new Date()).getTime();
+      baseCommand.fail = function (value) {
+        expect(baseCommand.seenCount).to.equal(0);
+        expect(value).to.equal("[bad gateway]");
+        done();
+      };
+      baseCommand.decide();
+      baseCommand.checkConditions();
+    });
+
+    it("Fail with not found", (done) => {
+      clientMock.api.execute = function (fn, args, callback) {
+        callback({
+          state: 'success',
+          sessionId: '60c692d2-7b53-4d43-a340-8d6133af13a8',
+          hCode: 1895546026,
+          value:
+          {
+            isVisible: false,
+            isVisibleStrict: false,
+            seens: 0,
+            selectorLength: 0,
+            selectorVisibleLength: 0,
+            value: {
+              sel: '#testDiv2',
+              value: null
+            }
+          },
+          class: 'org.openqa.selenium.remote.Response',
+          status: 0
+        });
+      };
+
+      clientMock.api.title = (callback) => {
+        callback({
+          value:"good"
+        })
+      }
+
+      baseCommand = new BaseCommand(clientMock, {
+        syncModeBrowserList: ["chrome:55", "iphone"]
+      });
+      baseCommand.seenCount = 0;
+      baseCommand.startTime = (new Date()).getTime();
+      baseCommand.fail = function (value) {
+        expect(baseCommand.seenCount).to.equal(0);
+        expect(value).to.equal("[not found]");
+        done();
+      };
+      baseCommand.decide();
+      baseCommand.checkConditions();
+    });
+
+    it("Fail with not visible", (done) => {
+      clientMock.api.execute = function (fn, args, callback) {
+        callback({
+          state: 'success',
+          sessionId: '60c692d2-7b53-4d43-a340-8d6133af13a8',
+          hCode: 1895546026,
+          value:
+          {
+            isVisible: false,
+            isVisibleStrict: false,
+            seens: 0,
+            selectorLength: 1,
+            selectorVisibleLength: 0,
+            value: {
+              sel: '#testDiv2',
+              value: null
+            }
+          },
+          class: 'org.openqa.selenium.remote.Response',
+          status: 0
+        });
+      };
+
+      baseCommand = new BaseCommand(clientMock, {
+        syncModeBrowserList: ["chrome:55", "iphone"]
+      });
+      baseCommand.seenCount = 0;
+      baseCommand.startTime = (new Date()).getTime();
+      baseCommand.fail = function (value) {
+        expect(baseCommand.seenCount).to.equal(0);
+        expect(value).to.equal("[not visible]");
         done();
       };
       baseCommand.decide();

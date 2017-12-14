@@ -177,7 +177,7 @@ Starting with version 4.3.1, we allow error messages from Nightwatch Extra API c
   * [SELENIUM_ERROR] - indicates a Saucelabs or local Selenium error.
   * [ATTRIBUTE_NOT_FOUND] - For mobile calls, it indicates that the given attribute was not found.
  
-The error dicationary needs to be a json formatted file with name-value pairs. It can be passed in as a system environment variable NIGHTWATCH_ERROR_DICTIONARY or in nightwatch.json attribute test_settings.default.errorDictionary. It can be a file path, url, or a url object accepted by [request.js](https://github.com/request/request)
+The error dicationary needs to be a json formatted file with name-value pairs. It can be passed in as a system environment variable NIGHTWATCH_ERROR_DICTIONARY or in nightwatch.json attribute test_settings.default.errorDictionary. It can be a file path, url, or a url object accepted by [request.js](https://github.com/request/request). System environment variable NIGHTWATCH_ERROR_DICTIONARY takes precendence over attribute in nightwatch.json. So if System environment variable NIGHTWATCH_ERROR_DICTIONARY exists, it will use that value.
 
 Examples:
 ```
@@ -187,15 +187,21 @@ export NIGHTWATCH_ERROR_DICTIONARY=/app/nightwatch-error-dictionary.json
 // url
 export NIGHTWATCH_ERROR_DICTIONARY=http://www.foo.com/nightwatch-error-dictionary.json
 
-// in nightwatch.json
+// in nightwatch.json as url
+{
+  "test_settings" : {
+    "default" : {
+      "errorDictionary": "http://www.foo.com/nightwatch-error-dictionary.json"
+    }
+  }
+}
+
+// in nightwatch.json as object with url requiring headers
 {
   "test_settings" : {
     "default" : {
       "errorDictionary":{
-        "protocol": "https:",
-        "host": "gecgithub01.walmart.com",
-        "port": "443",
-        "path": "/api/v3/repos/cahrens/test/contents/dictionary.json",
+        "url": "https://gecgithub01.walmart.com/api/v3/repos/cahrens/test/contents/dictionary.json",
         "headers":{
           "Authorization":"token 9fc63572e14ee7159837666cdf2a73a735d4954b",
           "Accept":"application/vnd.github.v3.raw"

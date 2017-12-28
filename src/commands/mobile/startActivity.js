@@ -13,9 +13,10 @@ const StartActivity = function (nightwatch = null) {
 util.inherits(StartActivity, BaseCommand);
 
 StartActivity.prototype.do = function (value) {
-  this.pass(value);
+  this.pass({ actual: value });
 };
 
+/* eslint-disable no-magic-numbers */
 StartActivity.prototype.checkConditions = function () {
   const self = this;
 
@@ -29,9 +30,17 @@ StartActivity.prototype.checkConditions = function () {
   };
 
   self.protocol(options, (result) => {
+
     if (result.status === 0) {
       // sucessful
       self.seenCount += 1;
+    } else if (result.status === -1 &&
+      result.errorStatus === 13) {
+      // method not implement, fail immediately
+      self.fail({
+        code: settings.FAILURE_REASONS.BUILTIN_COMMAND_NOT_SUPPORTED,
+        message: self.failureMessage
+      });
     }
 
     const elapsed = (new Date()).getTime() - self.startTime;
@@ -42,7 +51,10 @@ StartActivity.prototype.checkConditions = function () {
         self.time.seleniumCallTime = 0;
         self.do(result.value);
       } else {
-        self.fail();
+        self.fail({
+          code: settings.FAILURE_REASONS.BUILTIN_COMMAND_TIMEOUT,
+          message: self.failureMessage
+        });
       }
     } else {
       setTimeout(self.checkConditions, WAIT_INTERVAL);
@@ -56,9 +68,9 @@ StartActivity.prototype.command = function (app, cb) {
   this.cb = cb;
 
   this.successMessage = `Activity ${this.appPackage}.${this.appActivity}`
-    + " was started after %d milliseconds.";
+    + " was started after %d milliseconds";
   this.failureMessage = `Activity ${this.appPackage}.${this.appActivity}`
-    + " wasn't started after %d milliseconds.";
+    + " wasn't started after %d milliseconds";
 
   this.startTime = (new Date()).getTime();
 

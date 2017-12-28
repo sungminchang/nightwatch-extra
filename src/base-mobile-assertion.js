@@ -3,8 +3,6 @@ import util from "util";
 
 import settings from "./settings";
 
-import errorDictionary from "./errorDictionary";
-
 // Wait until we've seen a selector as :visible SEEN_MAX times, with a
 // wait for WAIT_INTERVAL milliseconds between each visibility test.
 const MAX_TIMEOUT = settings.COMMAND_MAX_TIMEOUT;
@@ -30,13 +28,6 @@ const Base = function (nightwatch = null) {
   // for mock and unit test
   if (nightwatch) {
     this.client = nightwatch;
-  }
-
-  if(this.client && this.client.queue && typeof(this.client.queue.instance === 'function')){
-    let instance = this.client.queue.instance();
-    if(instance && instance.currentNode){
-      this.stackTrace = instance.currentNode.stackTrace;
-    }
   }
 };
 
@@ -74,23 +65,7 @@ Base.prototype.checkConditions = function () {
 
         self.do(result.value);
       } else {
-        let errorMsg = null;
-        let actual = null;
-        let expected = null;
-        if(result.error){
-          if(result.error.indexOf("could not be located") > -1){
-            errorMsg = self.message + "[SELECTOR_NOT_FOUND]";
-            actual = "[not found]";
-            expected = "[found]";
-          }else if(result.error.indexOf("not visible") > -1){
-            errorMsg = self.message + "[SELECTOR_NOT_VISIBLE]";
-            actual = "[not visible]";
-            expected = "[visible]";
-          }else{
-            errorMsg = self.message + "[" + result.error + "]";
-          }
-        }
-        self.fail(actual, expected, errorMsg);
+        self.fail({ code: settings.FAILURE_REASONS.BUILTIN_SELECTOR_NOT_FOUND });
       }
     } else {
       setTimeout(self.checkConditions, WAIT_INTERVAL);
@@ -98,7 +73,7 @@ Base.prototype.checkConditions = function () {
   });
 };
 
-Base.prototype.pass = function (actual, expected, message) {
+Base.prototype.pass = function ({ actual, expected, message }) {
   this.time.totalTime = (new Date()).getTime() - this.startTime;
 
   this.client.assertion(true, actual, expected,
@@ -107,13 +82,16 @@ Base.prototype.pass = function (actual, expected, message) {
 };
 
 /*eslint max-params:["error", 4] */
-Base.prototype.fail = function (actual, expected, message, detail) {
+Base.prototype.fail = function ({ code, actual, expected, message }) {
+  // if no code here we do nothing
+  const pcode = code ? code : "";
+
   const pactual = actual || "not visible";
   const pexpected = expected || "visible";
   this.time.totalTime = (new Date()).getTime() - this.startTime;
-  const fmtmessage = errorDictionary.format(util.format((this.isSync ? "[sync mode] " : "") + (message || this.message), this.time.totalTime));
 
-  this.client.assertion(false, pactual, pexpected, fmtmessage, true, this.stackTrace);
+  this.client.assertion(false, pactual, pexpected,
+    util.format(`${this.message} [[${pcode}]]`, this.time.totalTime), true);
   this.emit("complete");
 };
 

@@ -110,6 +110,53 @@ require("testarmada-magellan-nightwatch/lib/base-test-class"); // DELETE THIS LI
 require("testarmada-nightwatch-extra/lib/base-test-class");    // ADD THIS LINE
 ```
 
+## *Important migration notice for Nightwatch-Extra@5*
+
+### What is changed in Nightwatch-Extra@5
+
+`Nightwatch-Extra@5` allows user to define plugins. A plugin can be used for test failure detection, error sum up or anything you can do in nightwatchjs' globals.js. With this plugin architecture, following features are designed as plugins in `nightwatch-extra#5`
+ 
+ 1. Appium server life cycle management
+ 2. Error dictionary
+
+### What to update in my repo
+
+No change is required if you're not willing to add customized plugin. In `nightwatch-extra@5` the above features are already placed as plugins and enabled by default.
+
+If you want to implement your own plugin and enable it
+
+ 1. In `nightwatch.json` file, add plugins entry under `test_settings -> default`. Plugins can be node module or a js file
+ ```js
+ "plugins": []
+ ```
+ 2. In `nightwatch.json` file, enable `globals_path`
+ ```js
+ "globals_path": "./lib/globals.js"
+ ```
+ 3. In `./lib/globals.js`, add following content
+ ```js
+  const extraGlobals = require("testarmada-nightwatch-extra/lib/globals");
+
+  module.exports = {
+    before: function (callback) {
+      extraGlobals.before.apply(this, [callback]);
+    },
+
+    after: function (callback) {
+      extraGlobals.after.apply(this, [callback]);
+    },
+
+    beforeEach: function (browser, callback) {
+      extraGlobals.beforeEach.apply(this, [browser, callback]);
+    },
+
+    afterEach: function (browser, callback) {
+      extraGlobals.afterEach.apply(this, [browser, callback]);
+    }
+  };
+
+ ```
+
 ## *Important migration notice for Nightwatch-Extra@4*
 
 ### What is changed in Nightwatch-Extra@4
@@ -169,6 +216,9 @@ require("testarmada-nightwatch-extra/lib/base-test-class");    // ADD THIS LINE
  
  Please refer to the changes in [nightwatch.json](https://github.com/TestArmada/boilerplate-nightwatch/blob/master/conf/nightwatch.json#L18) and [globals.js](https://github.com/TestArmada/boilerplate-nightwatch/blob/master/lib/globals.js) for more info.
 
+
+
+
 ## Error Dictionary
 Starting with version 4.3.1, we allow error messages from Nightwatch Extra API calls to be mapped to a dictionary file to provide the user with a better explanation for some of the errors that are encounted. Some of the standard messages now include codes (listed below) to be mapped, but you can also map other parts of the error message or even error messages from Saucelabs or Selenium.
   * [SELECTOR_NOT_VISIBLE] - indicates that the selector was found but is not visible.
@@ -186,30 +236,6 @@ export NIGHTWATCH_ERROR_DICTIONARY=/app/nightwatch-error-dictionary.json
 
 // url
 export NIGHTWATCH_ERROR_DICTIONARY=http://www.foo.com/nightwatch-error-dictionary.json
-
-// in nightwatch.json as url
-{
-  "test_settings" : {
-    "default" : {
-      "errorDictionary": "http://www.foo.com/nightwatch-error-dictionary.json"
-    }
-  }
-}
-
-// in nightwatch.json as object with url requiring headers
-{
-  "test_settings" : {
-    "default" : {
-      "errorDictionary":{
-        "url": "https://gecgithub01.walmart.com/api/v3/repos/cahrens/test/contents/dictionary.json",
-        "headers":{
-          "Authorization":"token 9fc63572e14ee7159837666cdf2a73a735d4954b",
-          "Accept":"application/vnd.github.v3.raw"
-        }
-      }
-    }
-  }
-}
 ```
 
 Example dictionary.json:

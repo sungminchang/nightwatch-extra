@@ -102,7 +102,7 @@
     "q": "1.4.1",
     "request": "2.79.0",
     "sanitize-filename": "1.6.1",
-    "statsd-client": "^0.2.2",
+    "statsd-client": "^0.4.1",
     "testarmada-tree-kill": "^2.0.1",
     "yargs": "6.5.0"
   },

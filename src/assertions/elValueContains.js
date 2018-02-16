@@ -12,6 +12,7 @@ util.inherits(ElValueContains, BaseAssertion);
 
 ElValueContains.prototype.assert = function (actual, expected) {
   if (expected === undefined
+    || !actual
     || actual.indexOf(expected) < 0
       && !new RegExp(expected).exec(actual)) {
     this.fail(actual, expected, this.message, this.failureDetails);

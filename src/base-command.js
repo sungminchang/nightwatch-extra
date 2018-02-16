@@ -10,6 +10,8 @@ import jsInjection from "./injections/js-injection";
 import stats from "./util/stats";
 import logger from "./util/logger";
 
+import errorDictionary from "./errorDictionary";
+
 // Wait until we've seen a selector as :visible SEEN_MAX times, with a
 // wait for WAIT_INTERVAL milliseconds between each visibility test.
 const MAX_TIMEOUT = settings.COMMAND_MAX_TIMEOUT;
@@ -43,6 +45,13 @@ const Base = function (nightwatch = null, customizedSettings = null) {
 
   if (customizedSettings) {
     this.syncModeBrowserList = customizedSettings.syncModeBrowserList;
+  }
+
+  if(this.client && this.client.queue && typeof(this.client.queue.instance === 'function')){
+    let instance = this.client.queue.instance();
+    if(instance && instance.currentNode){
+      this.stackTrace = instance.currentNode.stackTrace;
+    }
   }
 };
 
@@ -130,7 +139,17 @@ Base.prototype.checkConditions = function () {
           self.time.seleniumCallTime = 0;
           self.do(result.value.value);
         } else {
-          self.fail();
+          if(result.selectorLength === 1){
+            self.fail("[not visible]", "[visible]", this.failureMessage + "[SELECTOR_NOT_VISIBLE]");
+          }else{
+            self.client.api.title(function(title){
+              if(title.value === 'Bad Gateway' || title.value === 'Can\'t reach this page'){
+                self.fail("[bad gateway]", "[found]", self.failureMessage + "[BAD_GATEWAY]");
+              }else{
+                self.fail("[not found]", "[found]", self.failureMessage + "[SELECTOR_NOT_FOUND]");
+              }
+            });
+          }
         }
       } else {
         setTimeout(self.checkConditions, WAIT_INTERVAL);
@@ -189,7 +208,7 @@ Base.prototype.execute = function (fn, args, callback) {
         resultDisplay = util.inspect(result, false, null);
       }
       logger.warn(clc.yellowBright(resultDisplay));
-      self.fail();
+      self.fail("[selenium error]", "[visible]", resultDisplay + "[SELENIUM_ERROR]");
     }
   });
 };
@@ -216,13 +235,13 @@ Base.prototype.pass = function (actual, expected) {
   this.emit("complete");
 };
 
-Base.prototype.fail = function (actual, expected) {
+Base.prototype.fail = function (actual, expected, failureMessage) {
   const pactual = actual || "not visible";
   const pexpected = expected || "visible";
-  const message = (this.isSync ? "[sync mode] " : "") + this.failureMessage;
+  const message = errorDictionary.format(util.format((this.isSync ? "[sync mode] " : "") + (failureMessage || this.failureMessage), this.time.totalTime));
 
   this.time.totalTime = (new Date()).getTime() - this.startTime;
-  this.client.assertion(false, pactual, pexpected, util.format(message, this.time.totalTime), true);
+  this.client.assertion(false, pactual, pexpected, message, true, this.stackTrace);
 
   if (this.cb) {
     this.cb.apply(this.client.api, []);

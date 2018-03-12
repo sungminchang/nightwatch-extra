@@ -100,7 +100,7 @@
     "lodash": "^4.6.1",
     "moment": "^2.13.0",
     "q": "1.4.1",
-    "request": "2.79.0",
+    "request": "2.85.0",
     "sanitize-filename": "1.6.1",
     "statsd-client": "^0.2.2",
     "testarmada-tree-kill": "^2.0.1",

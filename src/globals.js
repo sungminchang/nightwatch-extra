@@ -11,7 +11,6 @@ const plugins = [appium, dictionary];
 module.exports = {
 
   before(callback) {
-
     const userPlugins = this.test_settings.plugins;
 
     // load default plugin
@@ -47,19 +46,23 @@ module.exports = {
             .before(this)
             .then(() => Promise.resolve())
             .catch((err) => {
-              logger.err(`Error in plugin.before for ${plugin.name}: ${err}`);
+              logger.err(`[${plugin.name}] Error in plugin.before: ${err}`);
               // we eat error here
-              return Promise.resolve();
+              throw err;
             });
         }
         return null;
       }))
       .then(() => callback())
-      .catch(err => callback(err));
+      .catch(err => {
+        // patch to error out test due to nightwatch implementation that continues test execution
+        // if error happens in hooks
+        logger.err(`Test process is terminated with exit code 10 due to ${err}`);
+        process.exit(10);
+      });
   },
 
   after(callback) {
-
     Promise
       .all(_.map(plugins, (plugin) => {
         if (plugin.after) {
@@ -68,7 +71,7 @@ module.exports = {
             .after(this)
             .then(() => Promise.resolve())
             .catch((err) => {
-              logger.err(`Error in plugin.after for ${plugin.name}: ${err}`);
+              logger.err(`[${plugin.name}] Error in plugin.after: ${err}`);
               // we eat error here
               return Promise.resolve();
             });
@@ -76,11 +79,15 @@ module.exports = {
         return null;
       }))
       .then(() => callback())
-      .catch(err => callback(err));
+      .catch(err => {
+        // patch to error out test due to nightwatch implementation that continues test execution
+        // if error happens in hooks
+        logger.err(`Test process is terminated with exit code 10 due to ${err}`);
+        process.exit(10);
+      });
   },
 
   beforeEach(client, callback) {
-
     Promise
       .all(_.map(plugins, (plugin) => {
         if (plugin.beforeEach) {
@@ -89,7 +96,7 @@ module.exports = {
             .beforeEach(this, client)
             .then(() => Promise.resolve())
             .catch((err) => {
-              logger.err(`Error in plugin.beforeEach for ${plugin.name}: ${err}`);
+              logger.err(`[${plugin.name}] Error in plugin.beforeEach: ${err}`);
               // we eat error here
               return Promise.resolve();
             });
@@ -97,11 +104,15 @@ module.exports = {
         return null;
       }))
       .then(() => callback())
-      .catch(err => callback(err));
+      .catch(err => {
+        // patch to error out test due to nightwatch implementation that continues test execution
+        // if error happens in hooks
+        logger.err(`Test process is terminated with exit code 10 due to ${err}`);
+        process.exit(10);
+      });
   },
 
   afterEach(client, callback) {
-
     Promise
       .all(_.map(plugins, (plugin) => {
         if (plugin.afterEach) {
@@ -110,7 +121,7 @@ module.exports = {
             .afterEach(this, client)
             .then(() => Promise.resolve())
             .catch((err) => {
-              logger.err(`Error in plugin.afterEach for ${plugin.name}: ${err}`);
+              logger.err(`[${plugin.name}] Error in plugin.afterEach for: ${err}`);
               // we eat error here
               return Promise.resolve();
             });
@@ -118,6 +129,11 @@ module.exports = {
         return null;
       }))
       .then(() => callback())
-      .catch(err => callback(err));
+      .catch(err => {
+        // patch to error out test due to nightwatch implementation that continues test execution
+        // if error happens in hooks
+        logger.err(`Test process is terminated with exit code 10 due to ${err}`);
+        process.exit(10);
+      });
   }
 };

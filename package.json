@@ -112,7 +112,7 @@
     "nightwatch": "^0.9.11",
     "testarmada-magellan": "^10.0.0",
     "testarmada-magellan-local-executor": "^1.0.0",
-    "testarmada-magellan-nightwatch-plugin": "^6.0.0",
+    "testarmada-magellan-nightwatch-plugin": "^8.0.0-beta1",
     "testarmada-magellan-saucelabs-executor": "^1.0.0",
     "testarmada-magellan-browserstack-executor": "1.0.0-beta3",
     "phantomjs": "2.1.7",

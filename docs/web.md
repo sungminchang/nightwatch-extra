@@ -98,8 +98,8 @@ All commands and assertions are fully compatible with nightwatchjs page object.
     <td>(no nightwatch equivalent)</td>
   </tr>
   <tr>
-    <td>takeScreenhot(filename)</td>
-    <td>takeScreenhot("page")</td>
+    <td>takeScreenshot(filename)</td>
+    <td>takeScreenshot("page")</td>
     <td>take screen shot for current page</td>
     <td>screenshot()</td>
   </tr>
